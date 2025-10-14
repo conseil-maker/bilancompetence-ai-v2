@@ -9,16 +9,7 @@
       "maxDuration": 10
     }
   },
-  "env": {
-    "NEXT_PUBLIC_SUPABASE_URL": "@supabase-url",
-    "NEXT_PUBLIC_SUPABASE_ANON_KEY": "@supabase-anon-key",
-    "SUPABASE_SERVICE_ROLE_KEY": "@supabase-service-role-key",
-    "STRIPE_SECRET_KEY": "@stripe-secret-key",
-    "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY": "@stripe-publishable-key",
-    "OPENAI_API_KEY": "@openai-api-key",
-    "GOOGLE_SERVICE_ACCOUNT_EMAIL": "@google-service-account-email",
-    "GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY": "@google-service-account-private-key"
-  },
+
   "headers": [
     {
       "source": "/(.*)",
