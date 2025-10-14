@@ -1,8 +1,10 @@
 import OpenAI from 'openai'
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-})
+const openai = process.env.OPENAI_API_KEY
+  ? new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    })
+  : null
 
 export interface JobRecommendation {
   titre: string
@@ -41,6 +43,10 @@ export interface RecommendationInput {
 export async function getJobRecommendations(
   input: RecommendationInput
 ): Promise<JobRecommendation[]> {
+  if (!openai) {
+    throw new Error('OpenAI API key not configured');
+  }
+  
   const prompt = `Tu es un expert en orientation professionnelle et en marché de l'emploi français. 
 
 Profil du bénéficiaire:

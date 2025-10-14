@@ -1,8 +1,10 @@
 import OpenAI from 'openai'
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-})
+const openai = process.env.OPENAI_API_KEY
+  ? new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    })
+  : null
 
 export interface PersonalityAnalysis {
   traitsPrincipaux: {
@@ -58,6 +60,10 @@ export async function analyzePersonality(
   testResults: TestResults,
   additionalContext?: string
 ): Promise<PersonalityAnalysis> {
+  if (!openai) {
+    throw new Error('OpenAI API key not configured');
+  }
+  
   const prompt = `Tu es un psychologue du travail expert. Analyse les résultats de tests suivants:
 
 ${testResults.mbti ? `MBTI: Type ${testResults.mbti.type}

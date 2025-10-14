@@ -1,8 +1,10 @@
 import OpenAI from 'openai'
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-})
+const openai = process.env.OPENAI_API_KEY
+  ? new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    })
+  : null
 
 export interface CVAnalysisResult {
   competences: {
@@ -32,6 +34,10 @@ export interface CVAnalysisResult {
 }
 
 export async function analyzeCV(cvText: string): Promise<CVAnalysisResult> {
+  if (!openai) {
+    throw new Error('OpenAI API key not configured');
+  }
+  
   const prompt = `Tu es un expert en analyse de CV et en orientation professionnelle. Analyse le CV suivant et fournis une analyse détaillée au format JSON.
 
 CV à analyser:
