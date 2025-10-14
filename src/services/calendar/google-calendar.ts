@@ -31,6 +31,9 @@ export interface CalendarAvailability {
 }
 
 async function getAuthClient() {
+  if (!process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL || !process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY) {
+    throw new Error('Google Calendar credentials not configured')
+  }
   const auth = new google.auth.GoogleAuth({
     credentials: {
       client_email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,

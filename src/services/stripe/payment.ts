@@ -1,8 +1,10 @@
 import Stripe from 'stripe'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-12-18.acacia',
-})
+const stripe = process.env.STRIPE_SECRET_KEY 
+  ? new Stripe(process.env.STRIPE_SECRET_KEY, {
+      apiVersion: '2025-09-30.clover',
+    })
+  : null
 
 export interface PaymentIntent {
   id: string
@@ -29,6 +31,9 @@ const FORMULE_PRICES = {
 export async function createPaymentIntent(
   data: BilanPaymentData
 ): Promise<PaymentIntent> {
+  if (!stripe) {
+    throw new Error('Stripe is not configured')
+  }
   try {
     const amount = FORMULE_PRICES[data.formule]
 
@@ -60,6 +65,9 @@ export async function createPaymentIntent(
 }
 
 export async function confirmPayment(paymentIntentId: string): Promise<boolean> {
+  if (!stripe) {
+    throw new Error('Stripe is not configured')
+  }
   try {
     const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId)
     return paymentIntent.status === 'succeeded'
@@ -73,6 +81,9 @@ export async function createCheckoutSession(data: BilanPaymentData): Promise<{
   sessionId: string
   url: string
 }> {
+  if (!stripe) {
+    throw new Error('Stripe is not configured')
+  }
   try {
     const amount = FORMULE_PRICES[data.formule]
 
@@ -116,6 +127,9 @@ export async function createCustomer(data: {
   name: string
   metadata?: Record<string, string>
 }): Promise<string> {
+  if (!stripe) {
+    throw new Error('Stripe is not configured')
+  }
   try {
     const customer = await stripe.customers.create({
       email: data.email,
@@ -131,6 +145,9 @@ export async function createCustomer(data: {
 }
 
 export async function getPaymentHistory(customerId: string): Promise<any[]> {
+  if (!stripe) {
+    return []
+  }
   try {
     const charges = await stripe.charges.list({
       customer: customerId,
@@ -148,6 +165,9 @@ export async function refundPayment(
   paymentIntentId: string,
   amount?: number
 ): Promise<boolean> {
+  if (!stripe) {
+    throw new Error('Stripe is not configured')
+  }
   try {
     const refund = await stripe.refunds.create({
       payment_intent: paymentIntentId,
