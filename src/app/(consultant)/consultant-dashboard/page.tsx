@@ -133,7 +133,7 @@ export default function ConsultantDashboard() {
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900">
-          Bonjour {user?.first_name} 👋
+          Bonjour {user?.full_name?.split(' ')[0]} 👋
         </h1>
         <p className="mt-2 text-gray-600">
           Voici un aperçu de votre activité et de vos bilans en cours
