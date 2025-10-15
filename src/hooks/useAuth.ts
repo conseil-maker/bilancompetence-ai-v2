@@ -101,8 +101,7 @@ export function useAuth() {
       .insert({
         id: authData.user.id,
         email: data.email,
-        first_name: data.first_name,
-        last_name: data.last_name,
+        full_name: data.full_name,
         phone: data.phone,
         role: data.role || 'beneficiaire',
       })
