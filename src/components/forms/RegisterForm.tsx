@@ -7,24 +7,27 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useAuthContext } from '@/components/providers/AuthProvider'
 import Link from 'next/link'
+import { registerSchema } from '@/lib/validation'
+import { useErrorHandler } from '@/hooks/useErrorHandler'
+import { useToast } from '@/hooks/useToast'
 
-const registerSchema = z.object({
-  email: z.string().email('Email invalide'),
-  password: z.string().min(8, 'Le mot de passe doit contenir au moins 8 caractères'),
+// Étendre le schéma de base pour ajouter la confirmation de mot de passe
+const extendedRegisterSchema = registerSchema.extend({
   confirmPassword: z.string(),
   first_name: z.string().min(2, 'Le prénom doit contenir au moins 2 caractères'),
   last_name: z.string().min(2, 'Le nom doit contenir au moins 2 caractères'),
-  phone: z.string().optional(),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Les mots de passe ne correspondent pas",
   path: ["confirmPassword"],
 })
 
-type RegisterFormData = z.infer<typeof registerSchema>
+type RegisterFormData = z.infer<typeof extendedRegisterSchema>
 
 export function RegisterForm() {
   const { register: registerUser } = useAuthContext()
   const router = useRouter()
+  const { handleError } = useErrorHandler()
+  const { success } = useToast()
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
@@ -33,7 +36,7 @@ export function RegisterForm() {
     handleSubmit,
     formState: { errors },
   } = useForm<RegisterFormData>({
-    resolver: zodResolver(registerSchema),
+    resolver: zodResolver(extendedRegisterSchema),
   })
 
   const onSubmit = async (data: RegisterFormData) => {
@@ -49,9 +52,11 @@ export function RegisterForm() {
         role: 'beneficiaire', // Par défaut, les inscriptions sont des bénéficiaires
       })
       
-      router.push('/beneficiaire/dashboard')
+      success('Inscription réussie ! Bienvenue sur BilanCompetence.AI')
+      router.push('/beneficiaire-dashboard')
     } catch (err: any) {
-      setError(err.message || 'Une erreur est survenue lors de l\'inscription')
+      const appError = handleError(err)
+      setError(appError.message)
     } finally {
       setIsLoading(false)
     }
