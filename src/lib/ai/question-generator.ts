@@ -1,0 +1,426 @@
+import OpenAI from 'openai';
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+// ============================================================================
+// TYPES
+// ============================================================================
+
+export interface QuestionContext {
+  phase: 'PRELIMINAIRE' | 'INVESTIGATION' | 'CONCLUSION' | 'SUIVI';
+  categorie: string;
+  profil: {
+    nom: string;
+    prenom: string;
+    age?: number;
+    situation?: string;
+    secteurActivite?: string;
+    niveauEtudes?: string;
+    experienceAnnees?: number;
+  };
+  objectifs: string[];
+  reponsesPrecedentes?: Array<{
+    question: string;
+    reponse: string;
+  }>;
+  contexteSupplement aire?: string;
+}
+
+export interface Question {
+  id: string;
+  texte: string;
+  type: 'OUVERTE' | 'FERMEE' | 'ECHELLE' | 'CHOIX_MULTIPLE';
+  categorie: string;
+  sousCategorie?: string;
+  optionsReponse?: string[];
+  echelle?: {
+    min: number;
+    max: number;
+    labelMin: string;
+    labelMax: string;
+  };
+  guidanceReponse?: string;
+  questionsSuivantes?: {
+    condition: string;
+    questions: string[];
+  }[];
+}
+
+export interface QuestionSet {
+  questions: Question[];
+  ordre: 'SEQUENTIEL' | 'ADAPTATIF';
+  dureeEstimee: number;
+  objectif: string;
+}
+
+// ============================================================================
+// PROMPTS SYSTÈME
+// ============================================================================
+
+const SYSTEM_PROMPTS = {
+  PRELIMINAIRE: `Tu es un consultant expert en bilan de compétences. Tu dois générer des questions pour la phase préliminaire.
+
+Objectifs de cette phase :
+- Comprendre les motivations du bénéficiaire
+- Identifier ses attentes vis-à-vis du bilan
+- Cerner son contexte professionnel et personnel
+- Définir les objectifs du bilan
+
+Les questions doivent être :
+- Ouvertes et non directives
+- Bienveillantes et encourageantes
+- Adaptées au profil du bénéficiaire
+- Progressives (du général au spécifique)
+
+Format de réponse : JSON avec un tableau de questions.`,
+
+  INVESTIGATION: `Tu es un consultant expert en bilan de compétences. Tu dois générer des questions pour la phase d'investigation.
+
+Objectifs de cette phase :
+- Explorer les compétences professionnelles et transversales
+- Identifier les intérêts et motivations profondes
+- Analyser les valeurs et les aspirations
+- Découvrir les talents et potentiels cachés
+
+Les questions doivent être :
+- Spécifiques et ciblées
+- Permettant l'introspection
+- Révélatrices de compétences implicites
+- Adaptées aux réponses précédentes
+
+Format de réponse : JSON avec un tableau de questions.`,
+
+  CONCLUSION: `Tu es un consultant expert en bilan de compétences. Tu dois générer des questions pour la phase de conclusion.
+
+Objectifs de cette phase :
+- Valider le projet professionnel
+- Identifier les étapes de mise en œuvre
+- Anticiper les obstacles
+- Renforcer la motivation
+
+Les questions doivent être :
+- Orientées vers l'action
+- Pragmatiques et concrètes
+- Permettant la projection dans l'avenir
+- Renforçant la confiance
+
+Format de réponse : JSON avec un tableau de questions.`,
+
+  SUIVI: `Tu es un consultant expert en bilan de compétences. Tu dois générer des questions pour la phase de suivi (6 mois après).
+
+Objectifs de cette phase :
+- Évaluer la mise en œuvre du projet
+- Identifier les réussites et difficultés
+- Ajuster le plan d'action si nécessaire
+- Mesurer l'impact du bilan
+
+Les questions doivent être :
+- Factuelles et mesurables
+- Permettant le bilan des actions
+- Identifiant les besoins d'accompagnement
+- Valorisant les progrès
+
+Format de réponse : JSON avec un tableau de questions.`,
+};
+
+// ============================================================================
+// GÉNÉRATEUR DE QUESTIONS
+// ============================================================================
+
+export class QuestionGenerator {
+  /**
+   * Génère un ensemble de questions personnalisées
+   */
+  async generateQuestions(
+    context: QuestionContext,
+    nombreQuestions: number = 10
+  ): Promise<QuestionSet> {
+    const prompt = this.buildPrompt(context, nombreQuestions);
+    
+    try {
+      const completion = await openai.chat.completions.create({
+        model: 'gpt-4-turbo-preview',
+        messages: [
+          {
+            role: 'system',
+            content: SYSTEM_PROMPTS[context.phase],
+          },
+          {
+            role: 'user',
+            content: prompt,
+          },
+        ],
+        temperature: 0.7,
+        response_format: { type: 'json_object' },
+      });
+
+      const response = JSON.parse(completion.choices[0].message.content || '{}');
+      
+      return {
+        questions: response.questions.map((q: any, index: number) => ({
+          id: `${context.phase}_${context.categorie}_${Date.now()}_${index}`,
+          ...q,
+        })),
+        ordre: response.ordre || 'SEQUENTIEL',
+        dureeEstimee: response.dureeEstimee || nombreQuestions * 5,
+        objectif: response.objectif || '',
+      };
+    } catch (error) {
+      console.error('Erreur lors de la génération de questions:', error);
+      throw new Error('Impossible de générer les questions');
+    }
+  }
+
+  /**
+   * Génère une question de suivi basée sur une réponse
+   */
+  async generateFollowUpQuestion(
+    questionOriginale: string,
+    reponse: string,
+    context: QuestionContext
+  ): Promise<Question> {
+    const prompt = `
+Contexte : ${context.phase} - ${context.categorie}
+Profil : ${JSON.stringify(context.profil)}
+
+Question originale : "${questionOriginale}"
+Réponse du bénéficiaire : "${reponse}"
+
+Génère UNE question de suivi pertinente pour approfondir cette réponse.
+La question doit permettre d'explorer davantage les motivations, compétences ou aspirations révélées.
+
+Format JSON attendu :
+{
+  "texte": "Question de suivi",
+  "type": "OUVERTE|FERMEE|ECHELLE|CHOIX_MULTIPLE",
+  "categorie": "${context.categorie}",
+  "guidanceReponse": "Conseil pour guider la réponse"
+}
+`;
+
+    try {
+      const completion = await openai.chat.completions.create({
+        model: 'gpt-4-turbo-preview',
+        messages: [
+          {
+            role: 'system',
+            content: SYSTEM_PROMPTS[context.phase],
+          },
+          {
+            role: 'user',
+            content: prompt,
+          },
+        ],
+        temperature: 0.8,
+        response_format: { type: 'json_object' },
+      });
+
+      const response = JSON.parse(completion.choices[0].message.content || '{}');
+      
+      return {
+        id: `followup_${Date.now()}`,
+        ...response,
+      };
+    } catch (error) {
+      console.error('Erreur lors de la génération de question de suivi:', error);
+      throw new Error('Impossible de générer la question de suivi');
+    }
+  }
+
+  /**
+   * Génère des questions adaptatives basées sur les réponses précédentes
+   */
+  async generateAdaptiveQuestions(
+    context: QuestionContext,
+    nombreQuestions: number = 5
+  ): Promise<QuestionSet> {
+    if (!context.reponsesPreced entes || context.reponsesPreced entes.length === 0) {
+      return this.generateQuestions(context, nombreQuestions);
+    }
+
+    const prompt = `
+Contexte : ${context.phase} - ${context.categorie}
+Profil : ${JSON.stringify(context.profil)}
+Objectifs : ${context.objectifs.join(', ')}
+
+Réponses précédentes :
+${context.reponsesPreced entes.map((r, i) => `
+${i + 1}. Q: ${r.question}
+   R: ${r.reponse}
+`).join('\n')}
+
+Analyse ces réponses et génère ${nombreQuestions} nouvelles questions qui :
+1. Approfondissent les thèmes émergents
+2. Explorent les zones d'ombre ou contradictions
+3. Permettent de valider des hypothèses
+4. Révèlent des compétences ou motivations cachées
+
+Les questions doivent être progressives et s'appuyer sur ce qui a déjà été dit.
+
+Format JSON attendu :
+{
+  "questions": [
+    {
+      "texte": "Question",
+      "type": "OUVERTE|FERMEE|ECHELLE|CHOIX_MULTIPLE",
+      "categorie": "${context.categorie}",
+      "sousCategorie": "Sous-catégorie si pertinent",
+      "guidanceReponse": "Conseil pour guider la réponse",
+      "raisonnement": "Pourquoi cette question à ce moment"
+    }
+  ],
+  "ordre": "ADAPTATIF",
+  "dureeEstimee": ${nombreQuestions * 5},
+  "objectif": "Objectif de ce set de questions"
+}
+`;
+
+    try {
+      const completion = await openai.chat.completions.create({
+        model: 'gpt-4-turbo-preview',
+        messages: [
+          {
+            role: 'system',
+            content: SYSTEM_PROMPTS[context.phase],
+          },
+          {
+            role: 'user',
+            content: prompt,
+          },
+        ],
+        temperature: 0.8,
+        response_format: { type: 'json_object' },
+      });
+
+      const response = JSON.parse(completion.choices[0].message.content || '{}');
+      
+      return {
+        questions: response.questions.map((q: any, index: number) => ({
+          id: `adaptive_${context.phase}_${Date.now()}_${index}`,
+          ...q,
+        })),
+        ordre: 'ADAPTATIF',
+        dureeEstimee: response.dureeEstimee,
+        objectif: response.objectif,
+      };
+    } catch (error) {
+      console.error('Erreur lors de la génération de questions adaptatives:', error);
+      throw new Error('Impossible de générer les questions adaptatives');
+    }
+  }
+
+  /**
+   * Construit le prompt pour la génération de questions
+   */
+  private buildPrompt(context: QuestionContext, nombreQuestions: number): string {
+    return `
+Génère ${nombreQuestions} questions personnalisées pour un bilan de compétences.
+
+CONTEXTE :
+- Phase : ${context.phase}
+- Catégorie : ${context.categorie}
+- Contexte supplémentaire : ${context.contexteSupplement aire || 'Aucun'}
+
+PROFIL DU BÉNÉFICIAIRE :
+- Nom : ${context.profil.prenom} ${context.profil.nom}
+- Âge : ${context.profil.age || 'Non renseigné'}
+- Situation : ${context.profil.situation || 'Non renseignée'}
+- Secteur d'activité : ${context.profil.secteurActivite || 'Non renseigné'}
+- Niveau d'études : ${context.profil.niveauEtudes || 'Non renseigné'}
+- Années d'expérience : ${context.profil.experienceAnnees || 'Non renseigné'}
+
+OBJECTIFS DU BILAN :
+${context.objectifs.map((obj, i) => `${i + 1}. ${obj}`).join('\n')}
+
+${context.reponsesPreced entes && context.reponsesPreced entes.length > 0 ? `
+RÉPONSES PRÉCÉDENTES :
+${context.reponsesPreced entes.map((r, i) => `
+${i + 1}. Q: ${r.question}
+   R: ${r.reponse}
+`).join('\n')}
+` : ''}
+
+CONSIGNES :
+1. Adapte les questions au profil et aux objectifs
+2. Utilise un ton bienveillant et professionnel
+3. Varie les types de questions (ouvertes, fermées, échelles)
+4. Assure une progression logique
+5. Permets l'introspection et la réflexion
+
+FORMAT JSON ATTENDU :
+{
+  "questions": [
+    {
+      "texte": "Texte de la question",
+      "type": "OUVERTE|FERMEE|ECHELLE|CHOIX_MULTIPLE",
+      "categorie": "${context.categorie}",
+      "sousCategorie": "Sous-catégorie si pertinent",
+      "optionsReponse": ["Option 1", "Option 2"] // si CHOIX_MULTIPLE ou FERMEE,
+      "echelle": {
+        "min": 1,
+        "max": 10,
+        "labelMin": "Pas du tout",
+        "labelMax": "Totalement"
+      } // si ECHELLE,
+      "guidanceReponse": "Conseil pour aider à répondre"
+    }
+  ],
+  "ordre": "SEQUENTIEL",
+  "dureeEstimee": ${nombreQuestions * 5},
+  "objectif": "Objectif global de ce set de questions"
+}
+`;
+  }
+}
+
+// ============================================================================
+// CATÉGORIES DE QUESTIONS PRÉDÉFINIES
+// ============================================================================
+
+export const CATEGORIES_QUESTIONS = {
+  PRELIMINAIRE: [
+    'Motivations',
+    'Attentes',
+    'Contexte professionnel',
+    'Contexte personnel',
+    'Objectifs du bilan',
+    'Contraintes',
+  ],
+  INVESTIGATION: [
+    'Compétences techniques',
+    'Compétences transversales',
+    'Soft skills',
+    'Intérêts professionnels',
+    'Valeurs',
+    'Motivations profondes',
+    'Talents cachés',
+    'Expériences marquantes',
+    'Réussites',
+    'Difficultés',
+  ],
+  CONCLUSION: [
+    'Projet professionnel',
+    'Étapes de mise en œuvre',
+    'Obstacles potentiels',
+    'Ressources disponibles',
+    'Plan d'action',
+    'Engagement',
+  ],
+  SUIVI: [
+    'Mise en œuvre du projet',
+    'Réussites',
+    'Difficultés rencontrées',
+    'Ajustements nécessaires',
+    'Besoins d'accompagnement',
+    'Impact du bilan',
+  ],
+};
+
+// ============================================================================
+// INSTANCE SINGLETON
+// ============================================================================
+
+export const questionGenerator = new QuestionGenerator();
+
