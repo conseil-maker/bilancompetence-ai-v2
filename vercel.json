@@ -1,52 +1,11 @@
 {
-  "buildCommand": "pnpm build",
-  "outputDirectory": ".next",
+  "name": "bilancompetence-ai-v2-prod",
   "framework": "nextjs",
-  "regions": ["cdg1"],
-
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        },
-        {
-          "key": "X-Frame-Options",
-          "value": "DENY"
-        },
-        {
-          "key": "X-XSS-Protection",
-          "value": "1; mode=block"
-        },
-        {
-          "key": "Referrer-Policy",
-          "value": "strict-origin-when-cross-origin"
-        },
-        {
-          "key": "Permissions-Policy",
-          "value": "camera=(), microphone=(), geolocation=()"
-        }
-      ]
-    }
-  ],
-  "redirects": [
-    {
-      "source": "/beneficiaire",
-      "destination": "/beneficiaire/dashboard",
-      "permanent": false
-    },
-    {
-      "source": "/consultant",
-      "destination": "/consultant/dashboard",
-      "permanent": false
-    },
-    {
-      "source": "/admin",
-      "destination": "/admin/dashboard",
-      "permanent": false
-    }
-  ]
+  "buildCommand": "pnpm build",
+  "devCommand": "pnpm dev",
+  "installCommand": "pnpm install",
+  "github": {
+    "silent": false,
+    "autoJobCancelation": true
+  }
 }
-
