@@ -89,7 +89,7 @@ Fournis une analyse complète avec:
 Réponds UNIQUEMENT avec un objet JSON valide.`
 
   try {
-    const response = await openai.chat.completions.create({
+    const response = await openai!.chat.completions.create({
       model: 'gpt-4.1-mini',
       messages: [
         {
@@ -140,6 +140,10 @@ export async function generateDevelopmentPlan(
   }[]
   synthesePlan: string
 }> {
+  if (!openai) {
+    throw new Error('OpenAI API key not configured');
+  }
+  
   const prompt = `Tu es un coach professionnel expert. Crée un plan de développement personnalisé.
 
 Analyse de personnalité:
@@ -156,7 +160,7 @@ Crée un plan de développement avec:
 Réponds UNIQUEMENT avec un objet JSON valide.`
 
   try {
-    const response = await openai.chat.completions.create({
+    const response = await openai!.chat.completions.create({
       model: 'gpt-4.1-mini',
       messages: [
         {

@@ -55,7 +55,7 @@ Fournis une analyse structurée avec:
 Réponds UNIQUEMENT avec un objet JSON valide, sans texte avant ou après.`
 
   try {
-    const response = await openai.chat.completions.create({
+    const response = await openai!.chat.completions.create({
       model: 'gpt-4.1-mini',
       messages: [
         {

@@ -70,7 +70,7 @@ Recommande 5 métiers pertinents avec:
 Réponds UNIQUEMENT avec un tableau JSON d'objets métier, sans texte avant ou après.`
 
   try {
-    const response = await openai.chat.completions.create({
+    const response = await openai!.chat.completions.create({
       model: 'gpt-4.1-mini',
       messages: [
         {
@@ -108,6 +108,10 @@ export async function analyzeJobMarket(jobTitle: string): Promise<{
   secteursPrincipaux: string[]
   syntheseMarche: string
 }> {
+  if (!openai) {
+    throw new Error('OpenAI API key not configured');
+  }
+  
   const prompt = `Analyse le marché de l'emploi en France pour le métier: ${jobTitle}
 
 Fournis une analyse avec:
@@ -122,7 +126,7 @@ Fournis une analyse avec:
 Réponds UNIQUEMENT avec un objet JSON valide.`
 
   try {
-    const response = await openai.chat.completions.create({
+    const response = await openai!.chat.completions.create({
       model: 'gpt-4.1-mini',
       messages: [
         {
