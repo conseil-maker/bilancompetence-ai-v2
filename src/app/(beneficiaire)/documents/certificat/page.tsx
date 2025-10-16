@@ -253,9 +253,9 @@ export default function CertificatPage() {
               </div>
               
               <div className="col-span-2">
-                <label className="block text-sm font-medium text-gray-600 mb-1">Signature numérique</label>
+                <label className="block text-sm font-medium text-gray-600 mb-1">Numéro de certificat</label>
                 <p className="font-mono text-sm bg-gray-50 p-2 rounded break-all">
-                  {certificat.signatureNumerique}
+                  {certificat.numeroCertificat}
                 </p>
               </div>
             </div>
