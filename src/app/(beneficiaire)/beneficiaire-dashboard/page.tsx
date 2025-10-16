@@ -108,7 +108,7 @@ export default function BeneficiaireDashboard() {
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900">
-          Bonjour {user?.full_name?.split(' ')[0]} 👋
+          Bonjour {user?.first_name} 👋
         </h1>
         <p className="mt-2 text-gray-600">
           Voici un aperçu de votre progression dans votre bilan de compétences

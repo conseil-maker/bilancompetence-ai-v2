@@ -113,7 +113,7 @@ export default function BeneficiaireLayout({
                 <User className="h-5 w-5" />
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium truncate">
-                    {user?.full_name}
+                    {user?.first_name} {user?.last_name}
                   </p>
                   <p className="text-xs text-gray-500 truncate">{user?.email}</p>
                 </div>

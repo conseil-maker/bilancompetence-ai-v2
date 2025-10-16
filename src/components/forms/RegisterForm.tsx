@@ -47,7 +47,8 @@ export function RegisterForm() {
       await registerUser({
         email: data.email,
         password: data.password,
-        full_name: `${data.first_name} ${data.last_name}`,
+        first_name: data.first_name,
+        last_name: data.last_name,
         phone: data.phone,
         role: 'beneficiaire', // Par défaut, les inscriptions sont des bénéficiaires
       })
