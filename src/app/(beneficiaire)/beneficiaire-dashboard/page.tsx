@@ -1,6 +1,8 @@
 'use client'
 
 import { useAuthContext } from '@/components/providers/AuthProvider'
+import { useBilans } from '@/hooks/api/useBilans'
+import { useEffect, useState } from 'react'
 import { 
   Calendar, 
   Clock, 
@@ -15,38 +17,64 @@ import Link from 'next/link'
 
 export default function BeneficiaireDashboard() {
   const { user } = useAuthContext()
+  const { getBilans, getBilanStats, loading } = useBilans()
+  const [stats, setStats] = useState<any>(null)
+  const [bilanId, setBilanId] = useState<string | null>(null)
 
-  // Données mockées - à remplacer par de vraies données Supabase
-  const stats = [
+  useEffect(() => {
+    async function loadStats() {
+      try {
+        // Récupérer le bilan actif de l'utilisateur
+        const bilans = await getBilans()
+        if (bilans.length > 0) {
+          const activeBilan = bilans.find(b => b.statut === 'en_cours') || bilans[0]
+          setBilanId(activeBilan.id)
+          
+          // Récupérer les stats réelles
+          const realStats = await getBilanStats(activeBilan.id)
+          setStats(realStats)
+        }
+      } catch (error) {
+        console.error('Erreur lors du chargement des stats:', error)
+      }
+    }
+
+    if (user) {
+      loadStats()
+    }
+  }, [user, getBilans, getBilanStats])
+
+  // Stats affichées
+  const displayStats = stats ? [
     {
       name: 'Progression',
-      value: '45%',
+      value: stats.progression.label,
       icon: TrendingUp,
       color: 'text-green-600',
       bgColor: 'bg-green-50',
     },
     {
       name: 'Heures réalisées',
-      value: '12h / 24h',
+      value: stats.heures.label,
       icon: Clock,
       color: 'text-blue-600',
       bgColor: 'bg-blue-50',
     },
     {
       name: 'Tests complétés',
-      value: '3 / 5',
+      value: stats.tests.label,
       icon: CheckCircle,
       color: 'text-purple-600',
       bgColor: 'bg-purple-50',
     },
     {
-      name: 'Messages',
-      value: '2 non lus',
-      icon: MessageSquare,
+      name: 'Documents',
+      value: stats.documents.label,
+      icon: FileText,
       color: 'text-orange-600',
       bgColor: 'bg-orange-50',
     },
-  ]
+  ] : []
 
   const prochainRdv = {
     date: '25 Octobre 2025',
