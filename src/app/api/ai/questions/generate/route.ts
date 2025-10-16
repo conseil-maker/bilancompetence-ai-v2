@@ -2,6 +2,21 @@ import { NextRequest, NextResponse } from 'next/server';
 export const runtime = 'nodejs';
 import { createClient } from '@/lib/supabase/server';
 import { questionGenerator, QuestionContext } from '@/lib/ai/question-generator';
+import { z } from 'zod';
+
+// Schéma de validation Zod
+const QuestionContextSchema = z.object({
+  phase: z.string().min(1),
+  categorie: z.string().min(1),
+  bilanId: z.string().uuid().optional(),
+  objectif: z.string().optional(),
+});
+
+const GenerateQuestionsSchema = z.object({
+  context: QuestionContextSchema,
+  nombreQuestions: z.number().int().min(1).max(20).optional(),
+  type: z.enum(['adaptive', 'standard']).optional(),
+});
 
 export async function POST(request: NextRequest) {
   try {
@@ -17,24 +32,26 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { context, nombreQuestions, type } = body;
-
-    // Validation
-    if (!context || !context.phase || !context.categorie) {
+    
+    // Validation avec Zod
+    const validationResult = GenerateQuestionsSchema.safeParse(body);
+    if (!validationResult.success) {
       return NextResponse.json(
-        { error: 'Contexte invalide' },
+        { error: 'Données invalides', details: validationResult.error.errors },
         { status: 400 }
       );
     }
+    
+    const { context, nombreQuestions, type } = validationResult.data;
 
-    // Générer les questions selon le type
-    const questionsArray = [];
+    // Générer les questions en parallèle pour améliorer les performances
     const nbQuestions = nombreQuestions || (type === 'adaptive' ? 5 : 10);
     
-    for (let i = 0; i < nbQuestions; i++) {
-      const question = await questionGenerator.generateQuestion(context as QuestionContext);
-      questionsArray.push(question);
-    }
+    const questionPromises = Array.from({ length: nbQuestions }, () =>
+      questionGenerator.generateQuestion(context as QuestionContext)
+    );
+    
+    const questionsArray = await Promise.all(questionPromises);
     
     // Créer le questionSet avec les questions générées
     const questionSet = {
