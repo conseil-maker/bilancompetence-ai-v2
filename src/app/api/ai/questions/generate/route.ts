@@ -1,18 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 export const runtime = 'nodejs';
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
+import { createClient } from '@/lib/supabase/server';
 import { questionGenerator, QuestionContext } from '@/lib/ai/question-generator';
 
 export async function POST(request: NextRequest) {
   try {
-    const supabase = createRouteHandlerClient({ cookies });
+    const supabase = await createClient();
     
     // Vérifier l'authentification
     const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
+    if (authError || !user) {
       return NextResponse.json(
-        { error: 'Non authentifié' },
+        { error: 'Unauthorized' },
         { status: 401 }
       );
     }
