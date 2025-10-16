@@ -28,19 +28,21 @@ export async function POST(request: NextRequest) {
     }
 
     // Générer les questions selon le type
-    let questionSet;
+    const questionsArray = [];
+    const nbQuestions = nombreQuestions || (type === 'adaptive' ? 5 : 10);
     
-    if (type === 'adaptive' && context.reponsesPrecedentes) {
-      questionSet = await questionGenerator.generateAdaptiveQuestions(
-        context as QuestionContext,
-        nombreQuestions || 5
-      );
-    } else {
-      questionSet = await questionGenerator.generateQuestions(
-        context as QuestionContext,
-        nombreQuestions || 10
-      );
+    for (let i = 0; i < nbQuestions; i++) {
+      const question = await questionGenerator.generateQuestion(context as QuestionContext);
+      questionsArray.push(question);
     }
+    
+    // Créer le questionSet avec les questions générées
+    const questionSet = {
+      questions: questionsArray,
+      ordre: questionsArray.map((_, index) => index + 1),
+      dureeEstimee: nbQuestions * 3, // 3 minutes par question en moyenne
+      objectif: `Générer ${nbQuestions} questions pour la phase ${context.phase}`,
+    };
 
     // Enregistrer les questions générées dans la base de données
     const { data: questionsData, error: insertError } = await supabase
