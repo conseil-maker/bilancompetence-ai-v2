@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+nexport const runtime = 'nodejs';
 import { CertificatRealisation } from '@/types/documents';
 import crypto from 'crypto';
 

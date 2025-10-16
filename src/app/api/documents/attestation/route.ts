@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+nexport const runtime = 'nodejs';
 import { AttestationFinFormation } from '@/types/documents';
 
 export async function POST(request: NextRequest) {

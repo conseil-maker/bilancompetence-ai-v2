@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+nexport const runtime = 'nodejs';
 import { ConventionBilan } from '@/types/documents';
 import { generatePDF } from '@/lib/documents/pdf-generator';
 

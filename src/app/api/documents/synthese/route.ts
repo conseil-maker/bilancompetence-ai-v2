@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+nexport const runtime = 'nodejs';
 import { DocumentSynthese } from '@/types/documents';
 import { geminiClient } from '@/lib/ai/gemini-client';
 
