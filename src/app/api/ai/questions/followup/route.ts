@@ -29,9 +29,9 @@ export async function POST(request: NextRequest) {
 
     // Générer la question de suivi
     const followUpQuestion = await questionGenerator.generateFollowUpQuestion(
+      context as QuestionContext,
       questionOriginale,
-      reponse,
-      context as QuestionContext
+      reponse
     );
 
     // Enregistrer la question de suivi

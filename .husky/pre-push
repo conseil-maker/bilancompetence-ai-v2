@@ -1,0 +1,13 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "🔍 Vérification du build avant push..."
+pnpm build
+
+if [ $? -ne 0 ]; then
+  echo "❌ Le build a échoué. Veuillez corriger les erreurs avant de push."
+  exit 1
+fi
+
+echo "✅ Build réussi ! Push autorisé."
+

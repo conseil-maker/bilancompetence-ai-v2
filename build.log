@@ -1,0 +1,35 @@
+
+> bilancompetence-ai-v2@0.1.0 build /home/ubuntu/bilancompetence-ai-v2
+> next build
+
+   ▲ Next.js 15.5.5
+   - Environments: .env.local, .env.production
+   - Experiments (use with caution):
+     · optimizePackageImports
+
+   Creating an optimized production build ...
+<w> [webpack.cache.PackFileCacheStrategy] Serializing big strings (118kiB) impacts deserialization performance (consider using Buffer instead and decode when needed)
+ ⚠ Compiled with warnings in 36.7s
+
+./node_modules/.pnpm/@supabase+realtime-js@2.75.0/node_modules/@supabase/realtime-js/dist/module/lib/websocket-factory.js
+A Node.js API is used (process.versions at line: 32) which is not supported in the Edge Runtime.
+Learn more: https://nextjs.org/docs/api-reference/edge-runtime
+
+Import trace for requested module:
+./node_modules/.pnpm/@supabase+realtime-js@2.75.0/node_modules/@supabase/realtime-js/dist/module/lib/websocket-factory.js
+./node_modules/.pnpm/@supabase+realtime-js@2.75.0/node_modules/@supabase/realtime-js/dist/module/index.js
+./node_modules/.pnpm/@supabase+supabase-js@2.75.0/node_modules/@supabase/supabase-js/dist/module/index.js
+./node_modules/.pnpm/@supabase+ssr@0.7.0_@supabase+supabase-js@2.75.0/node_modules/@supabase/ssr/dist/module/createBrowserClient.js
+./node_modules/.pnpm/@supabase+ssr@0.7.0_@supabase+supabase-js@2.75.0/node_modules/@supabase/ssr/dist/module/index.js
+
+./node_modules/.pnpm/@supabase+supabase-js@2.75.0/node_modules/@supabase/supabase-js/dist/module/index.js
+A Node.js API is used (process.version at line: 23) which is not supported in the Edge Runtime.
+Learn more: https://nextjs.org/docs/api-reference/edge-runtime
+
+Import trace for requested module:
+./node_modules/.pnpm/@supabase+supabase-js@2.75.0/node_modules/@supabase/supabase-js/dist/module/index.js
+./node_modules/.pnpm/@supabase+ssr@0.7.0_@supabase+supabase-js@2.75.0/node_modules/@supabase/ssr/dist/module/createBrowserClient.js
+./node_modules/.pnpm/@supabase+ssr@0.7.0_@supabase+supabase-js@2.75.0/node_modules/@supabase/ssr/dist/module/index.js
+
+   Skipping linting
+   Checking validity of types ...
