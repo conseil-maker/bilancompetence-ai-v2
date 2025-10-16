@@ -91,7 +91,7 @@ export async function getRdvsByType(bilanId: string, type: RdvType) {
 /**
  * Récupère les prochains RDV (à venir)
  */
-export async function getProchains Rdvs(bilanId: string) {
+export async function getProchainsRdvs(bilanId: string) {
   const supabase = createClient();
   
   const now = new Date().toISOString();

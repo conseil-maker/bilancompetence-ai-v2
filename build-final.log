@@ -1,0 +1,50 @@
+
+> bilancompetence-ai-v2@0.1.0 build /home/ubuntu/bilancompetence-ai-v2
+> next build
+
+   ▲ Next.js 15.5.5
+   - Experiments (use with caution):
+     · cpus: 1
+     · optimizePackageImports
+
+   Creating an optimized production build ...
+<w> [webpack.cache.PackFileCacheStrategy] Serializing big strings (118kiB) impacts deserialization performance (consider using Buffer instead and decode when needed)
+Failed to compile.
+
+./src/app/(beneficiaire)/experiences/page.tsx
+Module not found: Can't resolve '@/components/ui/ExperienceCard'
+
+https://nextjs.org/docs/messages/module-not-found
+
+./src/app/(beneficiaire)/experiences/page.tsx
+Module not found: Can't resolve '@/components/ui/dialog'
+
+https://nextjs.org/docs/messages/module-not-found
+
+./src/app/(beneficiaire)/pistes-metiers/page.tsx
+Module not found: Can't resolve '@/components/PisteMetierCard'
+
+https://nextjs.org/docs/messages/module-not-found
+
+./src/app/(beneficiaire)/pistes-metiers/page.tsx
+Module not found: Can't resolve '@/components/ui/alert'
+
+https://nextjs.org/docs/messages/module-not-found
+
+./src/app/(admin)/qualiopi/page.tsx
+Error:   [31mx[0m Unexpected eof
+     ,-[[36;1;4m/home/ubuntu/bilancompetence-ai-v2/src/app/(admin)/qualiopi/page.tsx[0m:336:7]
+ [2m334[0m | //     ],
+ [2m335[0m | //   };
+ [2m336[0m | // };
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/(admin)/qualiopi/page.tsx
+
+
+> Build failed because of webpack errors
+ ELIFECYCLE  Command failed with exit code 1.

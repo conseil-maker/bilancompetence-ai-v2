@@ -1,0 +1,136 @@
+
+> bilancompetence-ai-v2@0.1.0 build /home/ubuntu/bilancompetence-ai-v2
+> next build
+
+   ▲ Next.js 15.5.5
+   - Experiments (use with caution):
+     · cpus: 1
+     · optimizePackageImports
+
+   Creating an optimized production build ...
+<w> [webpack.cache.PackFileCacheStrategy] Serializing big strings (118kiB) impacts deserialization performance (consider using Buffer instead and decode when needed)
+Failed to compile.
+
+./src/app/(beneficiaire)/experiences/page.tsx
+Error:   [31mx[0m Unterminated string constant
+   ,-[[36;1;4m/home/ubuntu/bilancompetence-ai-v2/src/app/(beneficiaire)/experiences/page.tsx[0m:1:1]
+ [2m1[0m | 'use client\';
+   : [35;1m^^^^^^^^^^^^^^[0m
+ [2m2[0m | 
+ [2m3[0m | import { useState, useEffect, useMemo } from \'react\';
+ [2m4[0m | import { useAuth } from \'@/components/providers/AuthProvider\';
+   `----
+  [31mx[0m Unterminated string constant
+   ,-[[36;1;4m/home/ubuntu/bilancompetence-ai-v2/src/app/(beneficiaire)/experiences/page.tsx[0m:3:1]
+ [2m1[0m | 'use client\';
+ [2m2[0m | 
+ [2m3[0m | import { useState, useEffect, useMemo } from \'react\';
+   : [35;1m                                              ^^^^^^^^^[0m
+ [2m4[0m | import { useAuth } from \'@/components/providers/AuthProvider\';
+ [2m5[0m | import { competencesModule } from \'@/lib/supabase/modules\'; // Supposé exister
+   `----
+  [31mx[0m Expected unicode escape
+   ,-[[36;1;4m/home/ubuntu/bilancompetence-ai-v2/src/app/(beneficiaire)/experiences/page.tsx[0m:3:1]
+ [2m1[0m | 'use client\';
+ [2m2[0m | 
+ [2m3[0m | import { useState, useEffect, useMemo } from \'react\';
+   : [35;1m                                             ^[0m
+ [2m4[0m | import { useAuth } from \'@/components/providers/AuthProvider\';
+ [2m5[0m | import { competencesModule } from \'@/lib/supabase/modules\'; // Supposé exister
+   `----
+  [31mx[0m Unexpected token `<lexing error: Error { error: (62..62, ExpectedUnicodeEscape) }>`. Expected a string literal
+   ,-[[36;1;4m/home/ubuntu/bilancompetence-ai-v2/src/app/(beneficiaire)/experiences/page.tsx[0m:3:1]
+ [2m1[0m | 'use client\';
+ [2m2[0m | 
+ [2m3[0m | import { useState, useEffect, useMemo } from \'react\';
+   : [35;1m                                             ^[0m
+ [2m4[0m | import { useAuth } from \'@/components/providers/AuthProvider\';
+ [2m5[0m | import { competencesModule } from \'@/lib/supabase/modules\'; // Supposé exister
+   `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/(beneficiaire)/experiences/page.tsx
+
+./src/app/(beneficiaire)/formations/page.tsx
+Error:   [31mx[0m Expected '</', got 'className'
+     ,-[[36;1;4m/home/ubuntu/bilancompetence-ai-v2/src/app/(beneficiaire)/formations/page.tsx[0m:182:1]
+ [2m179[0m |           {/* Filtre par Type */}
+ [2m180[0m |           <select value={selectedType} onValueChange={setSelectedType} className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+ [2m181[0m |             <selectTrigger className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+ [2m182[0m |               <selectValue placeholder="Filtrer par type" / className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+     : [35;1m                                                            ^^^^^^^^^[0m
+ [2m183[0m |             </div>
+ [2m184[0m |             <selectContent className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+ [2m185[0m |               {FORMATION_TYPES.map(type => (
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/(beneficiaire)/formations/page.tsx
+
+./src/app/(beneficiaire)/pistes-metiers/page.tsx
+Error:   [31mx[0m Expected ',', got 'applications'
+    ,-[[36;1;4m/home/ubuntu/bilancompetence-ai-v2/src/app/(beneficiaire)/pistes-metiers/page.tsx[0m:62:1]
+ [2m59[0m |           {
+ [2m60[0m |             id: 'p1',
+ [2m61[0m |             titre: 'Développeur Web Full Stack',
+ [2m62[0m |             description: 'Conception et développement d\\'applications web complètes.',
+    : [35;1m                                                          ^^^^^^^^^^^^[0m
+ [2m63[0m |             secteur: 'Informatique',
+ [2m64[0m |             niveau_requis: 'Bac+5',
+ [2m65[0m |             salaire_moyen: 45000,
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/(beneficiaire)/pistes-metiers/page.tsx
+
+./src/app/(beneficiaire)/resources/page.tsx
+Error:   [31mx[0m Expected '</', got '='
+     ,-[[36;1;4m/home/ubuntu/bilancompetence-ai-v2/src/app/(beneficiaire)/resources/page.tsx[0m:175:1]
+ [2m172[0m |           <Filter className="h-5 w-5 text-gray-500 hidden md:block" />
+ [2m173[0m |           <select
+ [2m174[0m |             value={selectedCategory}
+ [2m175[0m |             onValueChange={(value: Category) = className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"> setSelectedCategory(value)}
+     : [35;1m                                             ^[0m
+ [2m176[0m |           >
+ [2m177[0m |             <selectTrigger className="w-full" className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+ [2m178[0m |               <selectValue placeholder="Filtrer par catégorie" / className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/(beneficiaire)/resources/page.tsx
+
+./src/app/(consultant)/enquetes/page.tsx
+Error:   [31mx[0m Expected '</', got 'jsx text (
+  [31m|[0m                   )'
+     ,-[[36;1;4m/home/ubuntu/bilancompetence-ai-v2/src/app/(consultant)/enquetes/page.tsx[0m:185:1]
+ [2m182[0m |                 <table className="min-w-full divide-y divide-gray-200">
+ [2m183[0m |                   <tableHeader className="min-w-full divide-y divide-gray-200">
+ [2m184[0m |                     <tableRow className="min-w-full divide-y divide-gray-200">
+ [2m185[0m | [35;1m,[0m[35;1m-[0m[35;1m>[0m                   <tableHead className="w-[200px]" className="min-w-full divide-y divide-gray-200">Titre de l\'enquête</TableHead>
+ [2m186[0m | [35;1m`[0m[35;1m-[0m[35;1m>[0m                   <tableHead className="min-w-full divide-y divide-gray-200">Description</TableHead>
+ [2m187[0m |                       <tableHead className="text-center" className="min-w-full divide-y divide-gray-200">Statut</TableHead>
+ [2m188[0m |                       <tableHead className="text-right" className="min-w-full divide-y divide-gray-200">Actions</TableHead>
+ [2m189[0m |                     </TableRow>
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/(consultant)/enquetes/page.tsx
+
+
+> Build failed because of webpack errors
+ ELIFECYCLE  Command failed with exit code 1.

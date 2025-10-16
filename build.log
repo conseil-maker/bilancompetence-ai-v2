@@ -3,7 +3,6 @@
 > next build
 
    ▲ Next.js 15.5.5
-   - Environments: .env.local, .env.production
    - Experiments (use with caution):
      · cpus: 1
      · optimizePackageImports
@@ -12,20 +11,90 @@
 <w> [webpack.cache.PackFileCacheStrategy] Serializing big strings (118kiB) impacts deserialization performance (consider using Buffer instead and decode when needed)
 Failed to compile.
 
-src/app/(admin)/bilans/page.tsx
-You cannot have two parallel pages that resolve to the same path. Please check /(admin)/bilans/page and /(consultant)/bilans/page. Refer to the route group docs for more information: https://nextjs.org/docs/app/building-your-application/routing/route-groups
+./src/app/(beneficiaire)/pistes-metiers/page.tsx
+Module not found: Can't resolve '@/components/PisteMetierCard'
 
-src/app/(admin)/resources/page.tsx
-You cannot have two parallel pages that resolve to the same path. Please check /(admin)/resources/page and /(beneficiaire)/resources/page. Refer to the route group docs for more information: https://nextjs.org/docs/app/building-your-application/routing/route-groups
+https://nextjs.org/docs/messages/module-not-found
 
-src/app/(beneficiaire)/messages/page.tsx
-You cannot have two parallel pages that resolve to the same path. Please check /(beneficiaire)/messages/page and /(consultant)/messages/page. Refer to the route group docs for more information: https://nextjs.org/docs/app/building-your-application/routing/route-groups
+./src/app/(beneficiaire)/pistes-metiers/page.tsx
+Module not found: Can't resolve '@/components/ui/alert'
 
-src/app/(beneficiaire)/profil/page.tsx
-You cannot have two parallel pages that resolve to the same path. Please check /(beneficiaire)/profil/page and /(consultant)/profil/page. Refer to the route group docs for more information: https://nextjs.org/docs/app/building-your-application/routing/route-groups
+https://nextjs.org/docs/messages/module-not-found
 
-src/app/(beneficiaire)/rdv/page.tsx
-You cannot have two parallel pages that resolve to the same path. Please check /(beneficiaire)/rdv/page and /(consultant)/rdv/page. Refer to the route group docs for more information: https://nextjs.org/docs/app/building-your-application/routing/route-groups
+./src/app/(admin)/qualiopi/page.tsx
+Error:   [31mx[0m Unexpected eof
+     ,-[[36;1;4m/home/ubuntu/bilancompetence-ai-v2/src/app/(admin)/qualiopi/page.tsx[0m:336:7]
+ [2m334[0m | //     ],
+ [2m335[0m | //   };
+ [2m336[0m | // };
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/(admin)/qualiopi/page.tsx
+
+./src/app/(beneficiaire)/experiences/page.tsx
+Error:   [31mx[0m Expression expected
+     ,-[[36;1;4m/home/ubuntu/bilancompetence-ai-v2/src/app/(beneficiaire)/experiences/page.tsx[0m:202:1]
+ [2m199[0m |         <h1 className="text-3xl font-bold text-gray-900">
+ [2m200[0m |           Mon Parcours Professionnel
+ [2m201[0m |         </h1>
+ [2m202[0m |         <button onClick={() => >"px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"> handleOpenModal()}>
+     : [35;1m                               ^[0m
+ [2m203[0m |           <Plus className="w-5 h-5 mr-2" />
+ [2m204[0m |           Ajouter une expérience
+ [2m205[0m |         </button>
+     `----
+  [31mx[0m Expression expected
+     ,-[[36;1;4m/home/ubuntu/bilancompetence-ai-v2/src/app/(beneficiaire)/experiences/page.tsx[0m:239:1]
+ [2m236[0m |                       <button
+ [2m237[0m |                         variant="ghost"
+ [2m238[0m |                         size="icon"
+ [2m239[0m |                         onClick={() => >"px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"> handleOpenModal(exp)}
+     : [35;1m                                       ^[0m
+ [2m240[0m |                         title="Modifier"
+ [2m241[0m |                       >
+ [2m242[0m |                         <Edit className="w-4 h-4 text-blue-500" />
+     `----
+  [31mx[0m Expression expected
+     ,-[[36;1;4m/home/ubuntu/bilancompetence-ai-v2/src/app/(beneficiaire)/experiences/page.tsx[0m:247:1]
+ [2m244[0m |                       <button
+ [2m245[0m |                         variant="ghost"
+ [2m246[0m |                         size="icon"
+ [2m247[0m |                         onClick={() => >"px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"> handleDelete(exp.id)}
+     : [35;1m                                       ^[0m
+ [2m248[0m |                         title="Supprimer"
+ [2m249[0m |                       >
+ [2m250[0m |                         <Trash2 className="w-4 h-4 text-red-500" />
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/(beneficiaire)/experiences/page.tsx
+
+./src/app/(beneficiaire)/formations/page.tsx
+Error:   [31mx[0m Expected '</', got 'jsx text (
+  [31m|[0m           )'
+     ,-[[36;1;4m/home/ubuntu/bilancompetence-ai-v2/src/app/(beneficiaire)/formations/page.tsx[0m:142:1]
+ [2m139[0m |           <div className="p-6 max-w-4xl mx-auto">
+ [2m140[0m |             <div className="border-red-500 bg-red-50" className="bg-white rounded-lg shadow p-6">
+ [2m141[0m |               <divHeader className="bg-white rounded-lg shadow p-6">
+ [2m142[0m | [35;1m,[0m[35;1m-[0m[35;1m>[0m             <divTitle className="text-red-700" className="bg-white rounded-lg shadow p-6">Erreur de chargement</CardTitle>
+ [2m143[0m | [35;1m`[0m[35;1m-[0m[35;1m>[0m           </div>
+ [2m144[0m |               <divContent className="bg-white rounded-lg shadow p-6">
+ [2m145[0m |                 <p className="text-red-600">{error}</p>
+ [2m146[0m |                 <button onClick={loadFormations} className="mt-4" className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/(beneficiaire)/formations/page.tsx
 
 
 > Build failed because of webpack errors

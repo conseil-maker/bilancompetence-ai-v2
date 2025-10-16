@@ -524,8 +524,21 @@ export class ParcoursEngine {
 }
 
 // ============================================================================
-// EXPORT DE L'INSTANCE SINGLETON
+// EXPORT DE L'INSTANCE SINGLETON (LAZY)
 // ============================================================================
+let _parcoursEngineInstance: ParcoursEngine | null = null;
 
-export const parcoursEngine = new ParcoursEngine();
+export function getParcoursEngine(): ParcoursEngine {
+  if (!_parcoursEngineInstance) {
+    _parcoursEngineInstance = new ParcoursEngine();
+  }
+  return _parcoursEngineInstance;
+}
+
+// Pour compatibilité avec le code existant
+export const parcoursEngine = new Proxy({} as ParcoursEngine, {
+  get(target, prop) {
+    return getParcoursEngine()[prop as keyof ParcoursEngine];
+  }
+});;
 

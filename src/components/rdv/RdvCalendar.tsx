@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Rdv } from '@/types/database.types';
-import { rdvModule } from '@/lib/supabase/modules';
+import * as rdvModule from '@/lib/supabase/modules/rdv';
 
 interface RdvCalendarProps {
   userId: string;
@@ -20,7 +20,9 @@ export default function RdvCalendar({ userId, role }: RdvCalendarProps) {
 
   const loadRdvs = async () => {
     try {
-      const data = await rdvModule.getRdvsByUser(userId);
+      const data = role === 'beneficiaire' 
+        ? await rdvModule.getRdvsBeneficiaire(userId)
+        : await rdvModule.getRdvsConsultant(userId);
       setRdvs(data);
     } catch (error) {
       console.error('Erreur chargement RDV:', error);
