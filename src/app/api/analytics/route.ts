@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
-nexport const runtime = 'nodejs';
+
+export const runtime = 'nodejs';
 
 /**
  * API endpoint pour collecter les événements analytics
