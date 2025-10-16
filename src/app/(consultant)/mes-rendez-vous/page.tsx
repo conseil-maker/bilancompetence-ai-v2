@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
-export default function MesRendez-vousPage() {
+export default function MesRendezvousPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

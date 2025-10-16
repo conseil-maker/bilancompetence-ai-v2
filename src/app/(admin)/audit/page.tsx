@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
-export default function Journald'AuditPage() {
+export default function JournaldAuditPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

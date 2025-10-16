@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
-export default function MonPland'ActionPage() {
+export default function MonPlandActionPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
