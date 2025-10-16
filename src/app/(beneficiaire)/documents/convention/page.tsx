@@ -3,10 +3,11 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Convention, StatutDocument } from '@/types/documents';
+import { useDocuments } from '@/hooks/api/useDocuments';
 
 export default function ConventionPage() {
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
+  const { generateDocument, isLoading } = useDocuments();
   const [convention, setConvention] = useState<Convention | null>(null);
   const [etape, setEtape] = useState<'formulaire' | 'apercu' | 'signature'>('formulaire');
 
@@ -79,26 +80,14 @@ export default function ConventionPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
 
-    try {
-      // Générer la convention
-      const response = await fetch('/api/documents/convention', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
+    // TODO: Récupérer le bilanId depuis le contexte ou les props
+    const bilanId = 'temp-bilan-id';
 
-      if (!response.ok) throw new Error('Erreur lors de la génération');
-
-      const data = await response.json();
-      setConvention(data.convention);
+    const response = await generateDocument('convention', bilanId);
+    if (response) {
+      // setConvention(response); // Adapter selon la structure de la réponse
       setEtape('apercu');
-    } catch (error) {
-      console.error('Erreur:', error);
-      alert('Erreur lors de la génération de la convention');
-    } finally {
-      setLoading(false);
     }
   };
 
