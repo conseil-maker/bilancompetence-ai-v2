@@ -5,11 +5,12 @@
    ▲ Next.js 15.5.5
    - Environments: .env.local, .env.production
    - Experiments (use with caution):
+     · cpus: 1
      · optimizePackageImports
 
    Creating an optimized production build ...
 <w> [webpack.cache.PackFileCacheStrategy] Serializing big strings (118kiB) impacts deserialization performance (consider using Buffer instead and decode when needed)
- ⚠ Compiled with warnings in 36.7s
+ ⚠ Compiled with warnings in 37.3s
 
 ./node_modules/.pnpm/@supabase+realtime-js@2.75.0/node_modules/@supabase/realtime-js/dist/module/lib/websocket-factory.js
 A Node.js API is used (process.versions at line: 32) which is not supported in the Edge Runtime.
@@ -31,5 +32,134 @@ Import trace for requested module:
 ./node_modules/.pnpm/@supabase+ssr@0.7.0_@supabase+supabase-js@2.75.0/node_modules/@supabase/ssr/dist/module/createBrowserClient.js
 ./node_modules/.pnpm/@supabase+ssr@0.7.0_@supabase+supabase-js@2.75.0/node_modules/@supabase/ssr/dist/module/index.js
 
+   Skipping validation of types
    Skipping linting
-   Checking validity of types ...
+   Collecting page data ...
+(node:34789) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+ ⚠ Using edge runtime on a page currently disables static generation for that page
+   Generating static pages (0/46) ...
+   Generating static pages (11/46) 
+   Generating static pages (22/46) 
+(node:34796) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+Error occurred prerendering page "/offline". Read more: https://nextjs.org/docs/messages/prerender-error
+Error: Event handlers cannot be passed to Client Component props.
+  {onClick: function onClick, className: ..., children: ...}
+            ^^^^^^^^^^^^^^^^
+If you need interactivity, consider converting part of this to a Client Component.
+    at stringify (<anonymous>) {
+  digest: '1223318314'
+}
+Export encountered an error on /offline/page: /offline, exiting the build.
+ ⨯ Next.js build worker exited with code: 1 and signal: null
+ ELIFECYCLE  Command failed with exit code 1.
+
+> bilancompetence-ai-v2@0.1.0 build /home/ubuntu/bilancompetence-ai-v2
+> next build
+
+   ▲ Next.js 15.5.5
+   - Environments: .env.local, .env.production
+   - Experiments (use with caution):
+     · cpus: 1
+     · optimizePackageImports
+
+   Creating an optimized production build ...
+<w> [webpack.cache.PackFileCacheStrategy] Serializing big strings (118kiB) impacts deserialization performance (consider using Buffer instead and decode when needed)
+ ⚠ Compiled with warnings in 42s
+
+./node_modules/.pnpm/@supabase+realtime-js@2.75.0/node_modules/@supabase/realtime-js/dist/module/lib/websocket-factory.js
+A Node.js API is used (process.versions at line: 32) which is not supported in the Edge Runtime.
+Learn more: https://nextjs.org/docs/api-reference/edge-runtime
+
+Import trace for requested module:
+./node_modules/.pnpm/@supabase+realtime-js@2.75.0/node_modules/@supabase/realtime-js/dist/module/lib/websocket-factory.js
+./node_modules/.pnpm/@supabase+realtime-js@2.75.0/node_modules/@supabase/realtime-js/dist/module/index.js
+./node_modules/.pnpm/@supabase+supabase-js@2.75.0/node_modules/@supabase/supabase-js/dist/module/index.js
+./node_modules/.pnpm/@supabase+ssr@0.7.0_@supabase+supabase-js@2.75.0/node_modules/@supabase/ssr/dist/module/createBrowserClient.js
+./node_modules/.pnpm/@supabase+ssr@0.7.0_@supabase+supabase-js@2.75.0/node_modules/@supabase/ssr/dist/module/index.js
+
+./node_modules/.pnpm/@supabase+supabase-js@2.75.0/node_modules/@supabase/supabase-js/dist/module/index.js
+A Node.js API is used (process.version at line: 23) which is not supported in the Edge Runtime.
+Learn more: https://nextjs.org/docs/api-reference/edge-runtime
+
+Import trace for requested module:
+./node_modules/.pnpm/@supabase+supabase-js@2.75.0/node_modules/@supabase/supabase-js/dist/module/index.js
+./node_modules/.pnpm/@supabase+ssr@0.7.0_@supabase+supabase-js@2.75.0/node_modules/@supabase/ssr/dist/module/createBrowserClient.js
+./node_modules/.pnpm/@supabase+ssr@0.7.0_@supabase+supabase-js@2.75.0/node_modules/@supabase/ssr/dist/module/index.js
+
+   Skipping validation of types
+   Skipping linting
+   Collecting page data ...
+(node:34923) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+ ⚠ Using edge runtime on a page currently disables static generation for that page
+   Generating static pages (0/46) ...
+   Generating static pages (11/46) 
+   Generating static pages (22/46) 
+   Generating static pages (34/46) 
+ ✓ Generating static pages (46/46)
+(node:34930) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                      Size  First Load JS
+┌ ○ /                                           120 B         192 kB
+├ ○ /_not-found                                 191 B         192 kB
+├ ○ /a-propos                                   120 B         192 kB
+├ ○ /admin-dashboard                          2.21 kB         194 kB
+├ ƒ /api/ai/analyze                             120 B         192 kB
+├ ƒ /api/ai/analyze-cv                          120 B         192 kB
+├ ƒ /api/ai/analyze-personality                 120 B         192 kB
+├ ƒ /api/ai/job-recommendations                 120 B         192 kB
+├ ƒ /api/ai/questions/followup                  120 B         192 kB
+├ ƒ /api/ai/questions/generate                  120 B         192 kB
+├ ƒ /api/analytics                              120 B         192 kB
+├ ƒ /api/automation/parcours                    120 B         192 kB
+├ ƒ /api/bilans                                 120 B         192 kB
+├ ƒ /api/bilans/[id]                            119 B         192 kB
+├ ƒ /api/bilans/[id]/stats                      120 B         192 kB
+├ ƒ /api/calendar/create-event                  119 B         192 kB
+├ ƒ /api/documents/attestation                  119 B         192 kB
+├ ƒ /api/documents/certificat                   120 B         192 kB
+├ ƒ /api/documents/convention                   120 B         192 kB
+├ ƒ /api/documents/emargement                   120 B         192 kB
+├ ƒ /api/documents/emargement/[id]/signature    120 B         192 kB
+├ ƒ /api/documents/synthese                     120 B         192 kB
+├ ƒ /api/health                                 120 B         192 kB
+├ ƒ /api/matching                               120 B         192 kB
+├ ƒ /api/parcours/preliminaire                  120 B         192 kB
+├ ƒ /api/payments/create-checkout               120 B         192 kB
+├ ƒ /api/profile                                120 B         192 kB
+├ ƒ /api/tests/[type]                           120 B         192 kB
+├ ○ /beneficiaire-dashboard                    2.1 kB         234 kB
+├ ○ /bilans                                   2.28 kB         195 kB
+├ ○ /consultant-dashboard                     2.21 kB         234 kB
+├ ○ /contact                                    119 B         192 kB
+├ ○ /documents/attestation                    2.38 kB         195 kB
+├ ○ /documents/certificat                     2.79 kB         195 kB
+├ ○ /documents/convention                     2.82 kB         195 kB
+├ ○ /documents/emargement                     2.96 kB         195 kB
+├ ○ /documents/synthese                       2.77 kB         195 kB
+├ ○ /login                                    1.18 kB         233 kB
+├ ○ /offline                                  1.47 kB         194 kB
+├ ○ /parcours                                 1.88 kB         194 kB
+├ ○ /parcours/conclusion                      3.66 kB         196 kB
+├ ○ /parcours/investigation                   3.35 kB         196 kB
+├ ○ /parcours/preliminaire                    2.37 kB         195 kB
+├ ○ /parcours/suivi                           3.33 kB         196 kB
+├ ○ /register                                 2.64 kB         235 kB
+├ ○ /tarifs                                     120 B         192 kB
+├ ○ /tests                                    2.02 kB         194 kB
+└ ○ /utilisateurs                             2.29 kB         195 kB
++ First Load JS shared by all                  192 kB
+  ├ chunks/vendor-3ba14176290065cc.js          188 kB
+  └ other shared chunks (total)               4.38 kB
+
+
+ƒ Middleware                                  75.1 kB
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

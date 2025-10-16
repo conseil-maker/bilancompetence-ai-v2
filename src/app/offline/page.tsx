@@ -1,10 +1,6 @@
-import React from 'react';
-import { Metadata } from 'next';
+'use client';
 
-export const metadata: Metadata = {
-  title: 'Mode Hors Ligne | BilanCompetence.AI',
-  description: 'Vous êtes actuellement hors ligne',
-};
+import React from 'react';
 
 /**
  * Page affichée lorsque l'utilisateur est hors ligne
