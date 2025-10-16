@@ -3,6 +3,10 @@
  * Facilite l'importation dans l'application
  */
 
+// Modules de base
+export * as profiles from './profiles';
+export * as bilans from './bilans';
+
 // Module Compétences
 export * as competences from './competences';
 
@@ -21,8 +25,23 @@ export * as notifications from './notifications';
 // Module Qualiopi
 export * as qualiopi from './qualiopi';
 
+// Modules fonctionnels
+export * as tests from './tests';
+export * as documents from './documents';
+export * as messages from './messages';
+export * as resources from './resources';
+export * as activites from './activites';
+
 // Réexport des types
 export type {
+  // Base
+  Profile,
+  Bilan,
+  UserRole,
+  BilanStatus,
+  BilanPhase,
+  BilanFinanceur,
+  
   // Compétences
   Experience,
   Competence,
@@ -58,6 +77,25 @@ export type {
   Notification,
   NotificationType,
   NotificationPriorite,
+  
+  // Tests
+  Test,
+  TestType,
+  TestStatut,
+  
+  // Documents
+  Document,
+  DocumentType,
+  
+  // Messages
+  Message,
+  
+  // Resources
+  Resource,
+  ResourceType,
+  
+  // Activités
+  Activite,
   
   // Qualiopi
   EnqueteSatisfaction,
