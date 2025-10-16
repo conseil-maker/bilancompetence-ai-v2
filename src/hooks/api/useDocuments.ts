@@ -1,113 +1,188 @@
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { apiClient } from '@/lib/api/client';
+
+export interface Document {
+  id: string;
+  bilan_id: string;
+  type: 'CONVENTION' | 'EMARGEMENT' | 'SYNTHESE' | 'ATTESTATION' | 'CERTIFICAT';
+  statut: 'brouillon' | 'genere' | 'signe' | 'finalise';
+  contenu: any;
+  created_at: string;
+  updated_at: string;
+}
+
 /**
- * Hook useDocuments
- * 
- * Gère la génération et la gestion des documents
+ * Hook pour récupérer tous les documents d'un bilan
  */
+export function useDocuments(bilanId: string | undefined) {
+  return useQuery({
+    queryKey: ['documents', bilanId],
+    queryFn: async () => {
+      const response = await apiClient.get<{ documents: Document[] }>(`/api/documents?bilan_id=${bilanId}`);
+      return response.documents;
+    },
+    enabled: !!bilanId,
+    staleTime: 5 * 60 * 1000, // 5 minutes (documents changent rarement)
+  });
+}
 
-import { useState } from 'react';
-import { api, APIError, DocumentResponse } from '@/lib/api';
-import { useToast } from '../useToast';
+/**
+ * Hook pour récupérer un document par ID
+ */
+export function useDocument(id: string | undefined) {
+  return useQuery({
+    queryKey: ['documents', id],
+    queryFn: async () => {
+      const response = await apiClient.get<{ document: Document }>(`/api/documents/${id}`);
+      return response.document;
+    },
+    enabled: !!id,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+}
 
-type DocumentType = 'convention' | 'emargement' | 'synthese' | 'attestation' | 'certificat';
+/**
+ * Hook pour créer une convention
+ */
+export function useCreateConvention() {
+  const queryClient = useQueryClient();
 
-export function useDocuments() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const { showToast } = useToast();
+  return useMutation({
+    mutationFn: async (data: any) => {
+      const response = await apiClient.post<{ document: Document }>('/api/documents/convention', data);
+      return response.document;
+    },
+    onSuccess: (newDocument) => {
+      // Invalider les documents du bilan
+      queryClient.invalidateQueries({ queryKey: ['documents', newDocument.bilan_id] });
+      // Invalider les stats du bilan
+      queryClient.invalidateQueries({ queryKey: ['bilans', newDocument.bilan_id, 'stats'] });
+      // Ajouter au cache
+      queryClient.setQueryData(['documents', newDocument.id], newDocument);
+    },
+  });
+}
 
-  const generateDocument = async (
-    type: DocumentType,
-    bilanId: string
-  ): Promise<DocumentResponse | null> => {
-    setIsLoading(true);
-    setError(null);
+/**
+ * Hook pour créer une feuille d'émargement
+ */
+export function useCreateEmargement() {
+  const queryClient = useQueryClient();
 
-    try {
-      let response: DocumentResponse;
+  return useMutation({
+    mutationFn: async (data: any) => {
+      const response = await apiClient.post<{ document: Document }>('/api/documents/emargement', data);
+      return response.document;
+    },
+    onSuccess: (newDocument) => {
+      queryClient.invalidateQueries({ queryKey: ['documents', newDocument.bilan_id] });
+      queryClient.invalidateQueries({ queryKey: ['bilans', newDocument.bilan_id, 'stats'] });
+      queryClient.setQueryData(['documents', newDocument.id], newDocument);
+    },
+  });
+}
 
-      switch (type) {
-        case 'convention':
-          response = await api.documents.generateConvention(bilanId);
-          break;
-        case 'emargement':
-          response = await api.documents.generateEmargement(bilanId);
-          break;
-        case 'synthese':
-          response = await api.documents.generateSynthese(bilanId);
-          break;
-        case 'attestation':
-          response = await api.documents.generateAttestation(bilanId);
-          break;
-        case 'certificat':
-          response = await api.documents.generateCertificat(bilanId);
-          break;
-        default:
-          throw new Error(`Type de document inconnu : ${type}`);
+/**
+ * Hook pour créer une synthèse
+ */
+export function useCreateSynthese() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (data: any) => {
+      const response = await apiClient.post<{ document: Document }>('/api/documents/synthese', data);
+      return response.document;
+    },
+    onSuccess: (newDocument) => {
+      queryClient.invalidateQueries({ queryKey: ['documents', newDocument.bilan_id] });
+      queryClient.invalidateQueries({ queryKey: ['bilans', newDocument.bilan_id, 'stats'] });
+      queryClient.setQueryData(['documents', newDocument.id], newDocument);
+    },
+  });
+}
+
+/**
+ * Hook pour créer une attestation
+ */
+export function useCreateAttestation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (data: any) => {
+      const response = await apiClient.post<{ document: Document }>('/api/documents/attestation', data);
+      return response.document;
+    },
+    onSuccess: (newDocument) => {
+      queryClient.invalidateQueries({ queryKey: ['documents', newDocument.bilan_id] });
+      queryClient.invalidateQueries({ queryKey: ['bilans', newDocument.bilan_id, 'stats'] });
+      queryClient.setQueryData(['documents', newDocument.id], newDocument);
+    },
+  });
+}
+
+/**
+ * Hook pour créer un certificat
+ */
+export function useCreateCertificat() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (data: any) => {
+      const response = await apiClient.post<{ document: Document }>('/api/documents/certificat', data);
+      return response.document;
+    },
+    onSuccess: (newDocument) => {
+      queryClient.invalidateQueries({ queryKey: ['documents', newDocument.bilan_id] });
+      queryClient.invalidateQueries({ queryKey: ['bilans', newDocument.bilan_id, 'stats'] });
+      queryClient.setQueryData(['documents', newDocument.id], newDocument);
+    },
+  });
+}
+
+/**
+ * Hook pour signer un document
+ */
+export function useSignDocument() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ id, signature }: { id: string; signature: string }) => {
+      const response = await apiClient.post<{ document: Document }>(
+        `/api/documents/${id}/signature`,
+        { signature }
+      );
+      return response.document;
+    },
+    onMutate: async ({ id }) => {
+      // Annuler les requêtes en cours
+      await queryClient.cancelQueries({ queryKey: ['documents', id] });
+
+      // Sauvegarder l'état précédent
+      const previousDocument = queryClient.getQueryData(['documents', id]);
+
+      // Optimistic update : marquer comme signé immédiatement
+      queryClient.setQueryData(['documents', id], (old: any) => ({
+        ...old,
+        statut: 'signe',
+        date_signature: new Date().toISOString(),
+      }));
+
+      return { previousDocument };
+    },
+    onError: (err, variables, context) => {
+      // Rollback en cas d'erreur
+      if (context?.previousDocument) {
+        queryClient.setQueryData(['documents', variables.id], context.previousDocument);
       }
-
-      showToast({
-        message: 'Document généré avec succès',
-        type: 'success',
-      });
-
-      return response;
-    } catch (err) {
-      const errorMessage =
-        err instanceof APIError
-          ? err.data?.error || err.message
-          : 'Erreur lors de la génération du document';
-
-      setError(errorMessage);
-      showToast({
-        message: errorMessage,
-        type: 'error',
-      });
-
-      return null;
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const signEmargement = async (
-    documentId: string,
-    signature: string
-  ): Promise<boolean> => {
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      await api.documents.signEmargement(documentId, signature);
-
-      showToast({
-        message: 'Document signé avec succès',
-        type: 'success',
-      });
-
-      return true;
-    } catch (err) {
-      const errorMessage =
-        err instanceof APIError
-          ? err.data?.error || err.message
-          : 'Erreur lors de la signature du document';
-
-      setError(errorMessage);
-      showToast({
-        message: errorMessage,
-        type: 'error',
-      });
-
-      return false;
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  return {
-    generateDocument,
-    signEmargement,
-    isLoading,
-    error,
-  };
+    },
+    onSettled: (data, error, variables) => {
+      // Invalider pour recharger les vraies données
+      queryClient.invalidateQueries({ queryKey: ['documents', variables.id] });
+      if (data) {
+        queryClient.invalidateQueries({ queryKey: ['documents', data.bilan_id] });
+        queryClient.invalidateQueries({ queryKey: ['bilans', data.bilan_id, 'stats'] });
+      }
+    },
+  });
 }
 
