@@ -78,7 +78,7 @@ export async function getProfilesByRole(role: UserRole) {
     .from('profiles')
     .select('*')
     .eq('role', role)
-    .order('nom', { ascending: true });
+    .order('last_name', { ascending: true });
 
   if (error) throw error;
   return data as Profile[];
@@ -95,7 +95,7 @@ export async function getConsultantsActifs() {
     .select('*')
     .eq('role', 'consultant')
     .eq('is_active', true)
-    .order('nom', { ascending: true });
+    .order('last_name', { ascending: true });
 
   if (error) throw error;
   return data as Profile[];
@@ -117,8 +117,8 @@ export async function searchProfiles(query: string) {
   const { data, error } = await supabase
     .from('profiles')
     .select('*')
-    .or(`nom.ilike.%${query}%,prenom.ilike.%${query}%,email.ilike.%${query}%`)
-    .order('nom', { ascending: true })
+    .or(`last_name.ilike.%${query}%,first_name.ilike.%${query}%,email.ilike.%${query}%`)
+    .order('last_name', { ascending: true })
     .limit(20);
 
   if (error) throw error;

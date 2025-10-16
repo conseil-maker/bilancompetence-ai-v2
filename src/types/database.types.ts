@@ -997,6 +997,7 @@ export interface Database {
           bilan_id: string;
           type: TestType;
           nom: string;
+          description: string | null;
           resultats: Json | null;
           score: number | null;
           interpretation: string | null;
@@ -1008,6 +1009,7 @@ export interface Database {
           bilan_id: string;
           type: TestType;
           nom: string;
+          description?: string | null;
           resultats?: Json | null;
           score?: number | null;
           interpretation?: string | null;
@@ -1018,6 +1020,7 @@ export interface Database {
           bilan_id?: string;
           type?: TestType;
           nom?: string;
+          description?: string | null;
           resultats?: Json | null;
           score?: number | null;
           interpretation?: string | null;
