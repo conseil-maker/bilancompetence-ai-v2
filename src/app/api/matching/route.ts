@@ -5,6 +5,8 @@ import { jobMatcher } from '@/lib/matching/job-matcher';
 import { formationMatcher } from '@/lib/matching/formation-matcher';
 import { ProfilComplet } from '@/lib/ai/analysis-engine';
 
+export const runtime = 'nodejs';
+
 export async function POST(request: NextRequest) {
   try {
     const supabase = createRouteHandlerClient({ cookies });

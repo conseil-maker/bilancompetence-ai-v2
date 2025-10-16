@@ -3,6 +3,8 @@ import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import { parcoursEngine } from '@/lib/automation/parcours-engine';
 
+export const runtime = 'nodejs';
+
 /**
  * GET /api/automation/parcours?bilanId=xxx
  * Analyser l'état du parcours et obtenir les actions automatiques
