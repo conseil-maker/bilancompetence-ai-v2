@@ -1,8 +1,4 @@
-import OpenAI from 'openai';
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+import { geminiClient, generateWithGemini } from './gemini-client';
 
 // ============================================================================
 // TYPES
@@ -25,7 +21,7 @@ export interface QuestionContext {
     question: string;
     reponse: string;
   }>;
-  contexteSupplement aire?: string;
+  contexteSupplementaire?: string;
 }
 
 export interface Question {
@@ -48,81 +44,83 @@ export interface Question {
   }[];
 }
 
-export interface QuestionSet {
-  questions: Question[];
-  ordre: 'SEQUENTIEL' | 'ADAPTATIF';
-  dureeEstimee: number;
-  objectif: string;
-}
-
 // ============================================================================
-// PROMPTS SYSTÈME
+// PROMPTS SYSTÈME PAR PHASE
 // ============================================================================
 
 const SYSTEM_PROMPTS = {
   PRELIMINAIRE: `Tu es un consultant expert en bilan de compétences. Tu dois générer des questions pour la phase préliminaire.
 
-Objectifs de cette phase :
+Objectifs de cette phase:
 - Comprendre les motivations du bénéficiaire
-- Identifier ses attentes vis-à-vis du bilan
-- Cerner son contexte professionnel et personnel
+- Identifier ses attentes
+- Clarifier son contexte professionnel et personnel
 - Définir les objectifs du bilan
 
-Les questions doivent être :
-- Ouvertes et non directives
-- Bienveillantes et encourageantes
+Les questions doivent être:
+- Ouvertes et bienveillantes
 - Adaptées au profil du bénéficiaire
 - Progressives (du général au spécifique)
+- Orientées vers l'action
 
-Format de réponse : JSON avec un tableau de questions.`,
+Format de réponse attendu (JSON):
+{
+  "texte": "La question à poser",
+  "type": "OUVERTE" | "FERMEE" | "ECHELLE" | "CHOIX_MULTIPLE",
+  "categorie": "Catégorie de la question",
+  "sousCategorie": "Sous-catégorie (optionnel)",
+  "optionsReponse": ["Option 1", "Option 2"] (si CHOIX_MULTIPLE),
+  "echelle": { "min": 1, "max": 10, "labelMin": "Pas du tout", "labelMax": "Totalement" } (si ECHELLE),
+  "guidanceReponse": "Conseils pour répondre"
+}`,
 
   INVESTIGATION: `Tu es un consultant expert en bilan de compétences. Tu dois générer des questions pour la phase d'investigation.
 
-Objectifs de cette phase :
-- Explorer les compétences professionnelles et transversales
-- Identifier les intérêts et motivations profondes
-- Analyser les valeurs et les aspirations
-- Découvrir les talents et potentiels cachés
+Objectifs de cette phase:
+- Explorer en profondeur les compétences
+- Analyser les expériences professionnelles
+- Identifier les talents et aptitudes
+- Découvrir les motivations profondes
 
-Les questions doivent être :
-- Spécifiques et ciblées
-- Permettant l'introspection
-- Révélatrices de compétences implicites
-- Adaptées aux réponses précédentes
+Les questions doivent être:
+- Précises et ciblées
+- Basées sur les réponses précédentes
+- Orientées vers l'analyse
+- Permettant l'auto-réflexion
 
-Format de réponse : JSON avec un tableau de questions.`,
+Format de réponse attendu (JSON): identique à la phase préliminaire.`,
 
   CONCLUSION: `Tu es un consultant expert en bilan de compétences. Tu dois générer des questions pour la phase de conclusion.
 
-Objectifs de cette phase :
+Objectifs de cette phase:
 - Valider le projet professionnel
-- Identifier les étapes de mise en œuvre
+- Identifier les actions concrètes
 - Anticiper les obstacles
-- Renforcer la motivation
+- Planifier la mise en œuvre
 
-Les questions doivent être :
+Les questions doivent être:
 - Orientées vers l'action
 - Pragmatiques et concrètes
-- Permettant la projection dans l'avenir
-- Renforçant la confiance
+- Permettant la projection
+- Facilitant la prise de décision
 
-Format de réponse : JSON avec un tableau de questions.`,
+Format de réponse attendu (JSON): identique aux phases précédentes.`,
 
-  SUIVI: `Tu es un consultant expert en bilan de compétences. Tu dois générer des questions pour la phase de suivi (6 mois après).
+  SUIVI: `Tu es un consultant expert en bilan de compétences. Tu dois générer des questions pour le suivi à 6 mois.
 
-Objectifs de cette phase :
+Objectifs de cette phase:
 - Évaluer la mise en œuvre du projet
 - Identifier les réussites et difficultés
 - Ajuster le plan d'action si nécessaire
 - Mesurer l'impact du bilan
 
-Les questions doivent être :
-- Factuelles et mesurables
-- Permettant le bilan des actions
-- Identifiant les besoins d'accompagnement
-- Valorisant les progrès
+Les questions doivent être:
+- Rétrospectives et évaluatives
+- Bienveillantes et encourageantes
+- Permettant le bilan
+- Orientées vers l'amélioration continue
 
-Format de réponse : JSON avec un tableau de questions.`,
+Format de réponse attendu (JSON): identique aux phases précédentes.`,
 };
 
 // ============================================================================
@@ -131,296 +129,170 @@ Format de réponse : JSON avec un tableau de questions.`,
 
 export class QuestionGenerator {
   /**
-   * Génère un ensemble de questions personnalisées
+   * Générer une question personnalisée
    */
-  async generateQuestions(
-    context: QuestionContext,
-    nombreQuestions: number = 10
-  ): Promise<QuestionSet> {
-    const prompt = this.buildPrompt(context, nombreQuestions);
+  async generateQuestion(context: QuestionContext): Promise<Question> {
+    const systemPrompt = SYSTEM_PROMPTS[context.phase];
     
+    const userPrompt = this.buildUserPrompt(context);
+
     try {
-      const completion = await openai.chat.completions.create({
-        model: 'gpt-4-turbo-preview',
+      const result = await geminiClient.generateContent({
         messages: [
-          {
-            role: 'system',
-            content: SYSTEM_PROMPTS[context.phase],
-          },
-          {
-            role: 'user',
-            content: prompt,
-          },
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userPrompt },
         ],
         temperature: 0.7,
-        response_format: { type: 'json_object' },
+        maxTokens: 500,
       });
 
-      const response = JSON.parse(completion.choices[0].message.content || '{}');
+      const questionData = this.parseQuestionResponse(result.content);
       
       return {
-        questions: response.questions.map((q: any, index: number) => ({
-          id: `${context.phase}_${context.categorie}_${Date.now()}_${index}`,
-          ...q,
-        })),
-        ordre: response.ordre || 'SEQUENTIEL',
-        dureeEstimee: response.dureeEstimee || nombreQuestions * 5,
-        objectif: response.objectif || '',
+        id: `q_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        ...questionData,
       };
     } catch (error) {
-      console.error('Erreur lors de la génération de questions:', error);
-      throw new Error('Impossible de générer les questions');
+      console.error('Erreur génération question:', error);
+      throw new Error('Impossible de générer la question');
     }
   }
 
   /**
-   * Génère une question de suivi basée sur une réponse
+   * Générer une question de suivi basée sur une réponse
    */
   async generateFollowUpQuestion(
-    questionOriginale: string,
-    reponse: string,
-    context: QuestionContext
-  ): Promise<Question> {
-    const prompt = `
-Contexte : ${context.phase} - ${context.categorie}
-Profil : ${JSON.stringify(context.profil)}
-
-Question originale : "${questionOriginale}"
-Réponse du bénéficiaire : "${reponse}"
-
-Génère UNE question de suivi pertinente pour approfondir cette réponse.
-La question doit permettre d'explorer davantage les motivations, compétences ou aspirations révélées.
-
-Format JSON attendu :
-{
-  "texte": "Question de suivi",
-  "type": "OUVERTE|FERMEE|ECHELLE|CHOIX_MULTIPLE",
-  "categorie": "${context.categorie}",
-  "guidanceReponse": "Conseil pour guider la réponse"
-}
-`;
-
-    try {
-      const completion = await openai.chat.completions.create({
-        model: 'gpt-4-turbo-preview',
-        messages: [
-          {
-            role: 'system',
-            content: SYSTEM_PROMPTS[context.phase],
-          },
-          {
-            role: 'user',
-            content: prompt,
-          },
-        ],
-        temperature: 0.8,
-        response_format: { type: 'json_object' },
-      });
-
-      const response = JSON.parse(completion.choices[0].message.content || '{}');
-      
-      return {
-        id: `followup_${Date.now()}`,
-        ...response,
-      };
-    } catch (error) {
-      console.error('Erreur lors de la génération de question de suivi:', error);
-      throw new Error('Impossible de générer la question de suivi');
-    }
-  }
-
-  /**
-   * Génère des questions adaptatives basées sur les réponses précédentes
-   */
-  async generateAdaptiveQuestions(
     context: QuestionContext,
-    nombreQuestions: number = 5
-  ): Promise<QuestionSet> {
-    if (!context.reponsesPreced entes || context.reponsesPreced entes.length === 0) {
-      return this.generateQuestions(context, nombreQuestions);
+    previousQuestion: string,
+    previousAnswer: string
+  ): Promise<Question | null> {
+    // 30% de chance de générer une question de suivi
+    if (Math.random() > 0.3) {
+      return null;
     }
 
-    const prompt = `
-Contexte : ${context.phase} - ${context.categorie}
-Profil : ${JSON.stringify(context.profil)}
-Objectifs : ${context.objectifs.join(', ')}
+    const systemPrompt = `Tu es un consultant expert. Génère une question de suivi pertinente basée sur la réponse précédente.
+    
+La question de suivi doit:
+- Approfondir la réponse donnée
+- Explorer un aspect non abordé
+- Clarifier un point ambigu
+- Être courte et précise
 
-Réponses précédentes :
-${context.reponsesPreced entes.map((r, i) => `
-${i + 1}. Q: ${r.question}
-   R: ${r.reponse}
-`).join('\n')}
+Format JSON attendu: identique aux questions principales.`;
 
-Analyse ces réponses et génère ${nombreQuestions} nouvelles questions qui :
-1. Approfondissent les thèmes émergents
-2. Explorent les zones d'ombre ou contradictions
-3. Permettent de valider des hypothèses
-4. Révèlent des compétences ou motivations cachées
+    const userPrompt = `Question précédente: "${previousQuestion}"
+Réponse: "${previousAnswer}"
 
-Les questions doivent être progressives et s'appuyer sur ce qui a déjà été dit.
+Profil: ${context.profil.prenom} ${context.profil.nom}
+Contexte: ${context.contexteSupplementaire || 'Aucun contexte supplémentaire'}
 
-Format JSON attendu :
-{
-  "questions": [
-    {
-      "texte": "Question",
-      "type": "OUVERTE|FERMEE|ECHELLE|CHOIX_MULTIPLE",
-      "categorie": "${context.categorie}",
-      "sousCategorie": "Sous-catégorie si pertinent",
-      "guidanceReponse": "Conseil pour guider la réponse",
-      "raisonnement": "Pourquoi cette question à ce moment"
-    }
-  ],
-  "ordre": "ADAPTATIF",
-  "dureeEstimee": ${nombreQuestions * 5},
-  "objectif": "Objectif de ce set de questions"
-}
-`;
+Génère une question de suivi pertinente.`;
 
     try {
-      const completion = await openai.chat.completions.create({
-        model: 'gpt-4-turbo-preview',
+      const result = await geminiClient.generateContent({
         messages: [
-          {
-            role: 'system',
-            content: SYSTEM_PROMPTS[context.phase],
-          },
-          {
-            role: 'user',
-            content: prompt,
-          },
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userPrompt },
         ],
         temperature: 0.8,
-        response_format: { type: 'json_object' },
+        maxTokens: 300,
       });
 
-      const response = JSON.parse(completion.choices[0].message.content || '{}');
+      const questionData = this.parseQuestionResponse(result.content);
       
       return {
-        questions: response.questions.map((q: any, index: number) => ({
-          id: `adaptive_${context.phase}_${Date.now()}_${index}`,
-          ...q,
-        })),
-        ordre: 'ADAPTATIF',
-        dureeEstimee: response.dureeEstimee,
-        objectif: response.objectif,
+        id: `q_followup_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        ...questionData,
       };
     } catch (error) {
-      console.error('Erreur lors de la génération de questions adaptatives:', error);
-      throw new Error('Impossible de générer les questions adaptatives');
+      console.error('Erreur génération question de suivi:', error);
+      return null;
     }
   }
 
   /**
-   * Construit le prompt pour la génération de questions
+   * Construire le prompt utilisateur
    */
-  private buildPrompt(context: QuestionContext, nombreQuestions: number): string {
-    return `
-Génère ${nombreQuestions} questions personnalisées pour un bilan de compétences.
+  private buildUserPrompt(context: QuestionContext): string {
+    let prompt = `Génère une question pour la phase ${context.phase}.
 
-CONTEXTE :
-- Phase : ${context.phase}
-- Catégorie : ${context.categorie}
-- Contexte supplémentaire : ${context.contexteSupplement aire || 'Aucun'}
+Profil du bénéficiaire:
+- Nom: ${context.profil.prenom} ${context.profil.nom}`;
 
-PROFIL DU BÉNÉFICIAIRE :
-- Nom : ${context.profil.prenom} ${context.profil.nom}
-- Âge : ${context.profil.age || 'Non renseigné'}
-- Situation : ${context.profil.situation || 'Non renseignée'}
-- Secteur d'activité : ${context.profil.secteurActivite || 'Non renseigné'}
-- Niveau d'études : ${context.profil.niveauEtudes || 'Non renseigné'}
-- Années d'expérience : ${context.profil.experienceAnnees || 'Non renseigné'}
-
-OBJECTIFS DU BILAN :
-${context.objectifs.map((obj, i) => `${i + 1}. ${obj}`).join('\n')}
-
-${context.reponsesPreced entes && context.reponsesPreced entes.length > 0 ? `
-RÉPONSES PRÉCÉDENTES :
-${context.reponsesPreced entes.map((r, i) => `
-${i + 1}. Q: ${r.question}
-   R: ${r.reponse}
-`).join('\n')}
-` : ''}
-
-CONSIGNES :
-1. Adapte les questions au profil et aux objectifs
-2. Utilise un ton bienveillant et professionnel
-3. Varie les types de questions (ouvertes, fermées, échelles)
-4. Assure une progression logique
-5. Permets l'introspection et la réflexion
-
-FORMAT JSON ATTENDU :
-{
-  "questions": [
-    {
-      "texte": "Texte de la question",
-      "type": "OUVERTE|FERMEE|ECHELLE|CHOIX_MULTIPLE",
-      "categorie": "${context.categorie}",
-      "sousCategorie": "Sous-catégorie si pertinent",
-      "optionsReponse": ["Option 1", "Option 2"] // si CHOIX_MULTIPLE ou FERMEE,
-      "echelle": {
-        "min": 1,
-        "max": 10,
-        "labelMin": "Pas du tout",
-        "labelMax": "Totalement"
-      } // si ECHELLE,
-      "guidanceReponse": "Conseil pour aider à répondre"
+    if (context.profil.age) {
+      prompt += `\n- Âge: ${context.profil.age} ans`;
     }
-  ],
-  "ordre": "SEQUENTIEL",
-  "dureeEstimee": ${nombreQuestions * 5},
-  "objectif": "Objectif global de ce set de questions"
-}
-`;
+    if (context.profil.situation) {
+      prompt += `\n- Situation: ${context.profil.situation}`;
+    }
+    if (context.profil.secteurActivite) {
+      prompt += `\n- Secteur: ${context.profil.secteurActivite}`;
+    }
+    if (context.profil.niveauEtudes) {
+      prompt += `\n- Niveau d'études: ${context.profil.niveauEtudes}`;
+    }
+    if (context.profil.experienceAnnees) {
+      prompt += `\n- Expérience: ${context.profil.experienceAnnees} ans`;
+    }
+
+    prompt += `\n\nObjectifs du bilan:`;
+    context.objectifs.forEach((obj, i) => {
+      prompt += `\n${i + 1}. ${obj}`;
+    });
+
+    if (context.reponsesPrecedentes && context.reponsesPrecedentes.length > 0) {
+      prompt += `\n\nRéponses précédentes (pour adapter la question):`;
+      context.reponsesPrecedentes.slice(-3).forEach((rp) => {
+        prompt += `\nQ: ${rp.question}\nR: ${rp.reponse}\n`;
+      });
+    }
+
+    if (context.contexteSupplementaire) {
+      prompt += `\n\nContexte supplémentaire: ${context.contexteSupplementaire}`;
+    }
+
+    prompt += `\n\nCatégorie de question souhaitée: ${context.categorie}`;
+    prompt += `\n\nGénère UNE question pertinente au format JSON.`;
+
+    return prompt;
+  }
+
+  /**
+   * Parser la réponse de Gemini
+   */
+  private parseQuestionResponse(response: string): Omit<Question, 'id'> {
+    try {
+      // Extraire le JSON de la réponse
+      const jsonMatch = response.match(/\{[\s\S]*\}/);
+      if (!jsonMatch) {
+        throw new Error('Pas de JSON trouvé dans la réponse');
+      }
+
+      const questionData = JSON.parse(jsonMatch[0]);
+
+      return {
+        texte: questionData.texte,
+        type: questionData.type || 'OUVERTE',
+        categorie: questionData.categorie || 'Général',
+        sousCategorie: questionData.sousCategorie,
+        optionsReponse: questionData.optionsReponse,
+        echelle: questionData.echelle,
+        guidanceReponse: questionData.guidanceReponse,
+        questionsSuivantes: questionData.questionsSuivantes,
+      };
+    } catch (error) {
+      console.error('Erreur parsing question:', error);
+      // Question par défaut en cas d'erreur
+      return {
+        texte: 'Pouvez-vous nous en dire plus sur votre parcours professionnel ?',
+        type: 'OUVERTE',
+        categorie: 'Parcours',
+      };
+    }
   }
 }
 
-// ============================================================================
-// CATÉGORIES DE QUESTIONS PRÉDÉFINIES
-// ============================================================================
-
-export const CATEGORIES_QUESTIONS = {
-  PRELIMINAIRE: [
-    'Motivations',
-    'Attentes',
-    'Contexte professionnel',
-    'Contexte personnel',
-    'Objectifs du bilan',
-    'Contraintes',
-  ],
-  INVESTIGATION: [
-    'Compétences techniques',
-    'Compétences transversales',
-    'Soft skills',
-    'Intérêts professionnels',
-    'Valeurs',
-    'Motivations profondes',
-    'Talents cachés',
-    'Expériences marquantes',
-    'Réussites',
-    'Difficultés',
-  ],
-  CONCLUSION: [
-    'Projet professionnel',
-    'Étapes de mise en œuvre',
-    'Obstacles potentiels',
-    'Ressources disponibles',
-    'Plan d'action',
-    'Engagement',
-  ],
-  SUIVI: [
-    'Mise en œuvre du projet',
-    'Réussites',
-    'Difficultés rencontrées',
-    'Ajustements nécessaires',
-    'Besoins d'accompagnement',
-    'Impact du bilan',
-  ],
-};
-
-// ============================================================================
-// INSTANCE SINGLETON
-// ============================================================================
-
+// Instance par défaut
 export const questionGenerator = new QuestionGenerator();
 

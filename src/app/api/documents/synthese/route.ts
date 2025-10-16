@@ -1,11 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { DocumentSynthese } from '@/types/documents';
-import OpenAI from 'openai';
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+import { geminiClient } from '@/lib/ai/gemini-client';
 
 export async function POST(request: NextRequest) {
   try {
@@ -68,22 +64,24 @@ Génère une synthèse structurée en JSON avec :
 - recommandations : liste de 5-7 recommandations personnalisées`;
 
       try {
-        const completion = await openai.chat.completions.create({
-          model: 'gpt-4-turbo-preview',
+        const completion = await geminiClient.generateContent({
           messages: [
             {
               role: 'system',
-              content: 'Tu es un consultant expert en bilan de compétences. Tu génères des synthèses professionnelles, personnalisées et constructives.',
+              content: 'Tu es un consultant expert en bilan de compétences. Tu génères des synthèses professionnelles, personnalisées et constructives. Réponds UNIQUEMENT en JSON valide.',
             },
             {
               role: 'user',
               content: prompt,
             },
           ],
-          response_format: { type: 'json_object' },
+          temperature: 0.7,
+          maxTokens: 2048,
         });
 
-        const result = JSON.parse(completion.choices[0].message.content || '{}');
+        // Extraire le JSON de la réponse
+        const jsonMatch = completion.content.match(/\{[\s\S]*\}/);
+        const result = jsonMatch ? JSON.parse(jsonMatch[0]) : {};
         syntheseTexte = result.syntheseTexte || '';
         pointsForts = result.pointsForts || [];
         competencesCles = result.competencesCles || [];

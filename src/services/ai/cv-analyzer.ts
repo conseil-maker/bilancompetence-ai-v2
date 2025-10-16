@@ -1,10 +1,4 @@
-import OpenAI from 'openai'
-
-const openai = process.env.OPENAI_API_KEY
-  ? new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
-    })
-  : null
+import { geminiClient } from '@/lib/ai/gemini-client';
 
 export interface CVAnalysisResult {
   competences: {
@@ -34,10 +28,6 @@ export interface CVAnalysisResult {
 }
 
 export async function analyzeCV(cvText: string): Promise<CVAnalysisResult> {
-  if (!openai) {
-    throw new Error('OpenAI API key not configured');
-  }
-  
   const prompt = `Tu es un expert en analyse de CV et en orientation professionnelle. Analyse le CV suivant et fournis une analyse détaillée au format JSON.
 
 CV à analyser:
@@ -52,11 +42,10 @@ Fournis une analyse structurée avec:
 6. 5 métiers recommandés avec score de correspondance (0-100) et raison
 7. Une synthèse globale du profil
 
-Réponds UNIQUEMENT avec un objet JSON valide, sans texte avant ou après.`
+Réponds UNIQUEMENT avec un objet JSON valide, sans texte avant ou après.`;
 
   try {
-    const response = await openai!.chat.completions.create({
-      model: 'gpt-4.1-mini',
+    const result = await geminiClient.generateContent({
       messages: [
         {
           role: 'system',
@@ -68,19 +57,25 @@ Réponds UNIQUEMENT avec un objet JSON valide, sans texte avant ou après.`
         },
       ],
       temperature: 0.7,
-      response_format: { type: 'json_object' },
-    })
+      maxTokens: 2048,
+    });
 
-    const content = response.choices[0].message.content
+    const content = result.content;
     if (!content) {
-      throw new Error('No content in AI response')
+      throw new Error('No content in AI response');
     }
 
-    const analysis = JSON.parse(content)
-    return analysis as CVAnalysisResult
+    // Extraire le JSON de la réponse
+    const jsonMatch = content.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      throw new Error('No JSON found in response');
+    }
+
+    const analysis = JSON.parse(jsonMatch[0]);
+    return analysis as CVAnalysisResult;
   } catch (error) {
-    console.error('Error analyzing CV:', error)
-    throw new Error('Failed to analyze CV')
+    console.error('Error analyzing CV:', error);
+    throw new Error('Failed to analyze CV');
   }
 }
 
@@ -117,6 +112,6 @@ COMPÉTENCES
 
 Techniques: React, Node.js, Python, SQL, AWS, Docker
 Gestion de projet: Agile, Scrum, Jira
-Langues: Français (natif), Anglais (courant), Espagnol (intermédiaire)`
+Langues: Français (natif), Anglais (courant), Espagnol (intermédiaire)`;
 }
 

@@ -50,7 +50,7 @@ export default function QuestionnaireIA({
             categorie,
             profil,
             objectifs,
-            reponsesPreced entes: reponses.length > 0 ? reponses.slice(-3) : undefined,
+            reponsesPrecedentes: reponses.length > 0 ? reponses.slice(-3) : undefined,
           },
           nombreQuestions: 10,
           type: reponses.length > 0 ? 'adaptive' : 'initial',

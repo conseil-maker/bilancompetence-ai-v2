@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
     // Générer les questions selon le type
     let questionSet;
     
-    if (type === 'adaptive' && context.reponsesPreced entes) {
+    if (type === 'adaptive' && context.reponsesPrecedentes) {
       questionSet = await questionGenerator.generateAdaptiveQuestions(
         context as QuestionContext,
         nombreQuestions || 5

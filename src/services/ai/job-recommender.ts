@@ -1,10 +1,4 @@
-import OpenAI from 'openai'
-
-const openai = process.env.OPENAI_API_KEY
-  ? new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
-    })
-  : null
+import { geminiClient } from '@/lib/ai/gemini-client';
 
 export interface JobRecommendation {
   titre: string
@@ -43,10 +37,6 @@ export interface RecommendationInput {
 export async function getJobRecommendations(
   input: RecommendationInput
 ): Promise<JobRecommendation[]> {
-  if (!openai) {
-    throw new Error('OpenAI API key not configured');
-  }
-  
   const prompt = `Tu es un expert en orientation professionnelle et en marché de l'emploi français. 
 
 Profil du bénéficiaire:
@@ -67,11 +57,10 @@ Recommande 5 métiers pertinents avec:
 7. Score de correspondance (0-100)
 8. 2-3 formations recommandées pour y accéder
 
-Réponds UNIQUEMENT avec un tableau JSON d'objets métier, sans texte avant ou après.`
+Réponds UNIQUEMENT avec un tableau JSON d'objets métier, sans texte avant ou après.`;
 
   try {
-    const response = await openai!.chat.completions.create({
-      model: 'gpt-4.1-mini',
+    const result = await geminiClient.generateContent({
       messages: [
         {
           role: 'system',
@@ -83,19 +72,25 @@ Réponds UNIQUEMENT avec un tableau JSON d'objets métier, sans texte avant ou a
         },
       ],
       temperature: 0.8,
-      response_format: { type: 'json_object' },
-    })
+      maxTokens: 3000,
+    });
 
-    const content = response.choices[0].message.content
+    const content = result.content;
     if (!content) {
-      throw new Error('No content in AI response')
+      throw new Error('No content in AI response');
     }
 
-    const result = JSON.parse(content)
-    return result.metiers || result.recommendations || []
+    // Extraire le JSON de la réponse
+    const jsonMatch = content.match(/\{[\s\S]*\}|\[[\s\S]*\]/);
+    if (!jsonMatch) {
+      throw new Error('No JSON found in response');
+    }
+
+    const parsed = JSON.parse(jsonMatch[0]);
+    return parsed.metiers || parsed.recommendations || parsed || [];
   } catch (error) {
-    console.error('Error getting job recommendations:', error)
-    throw new Error('Failed to get job recommendations')
+    console.error('Error getting job recommendations:', error);
+    throw new Error('Failed to get job recommendations');
   }
 }
 
@@ -108,10 +103,6 @@ export async function analyzeJobMarket(jobTitle: string): Promise<{
   secteursPrincipaux: string[]
   syntheseMarche: string
 }> {
-  if (!openai) {
-    throw new Error('OpenAI API key not configured');
-  }
-  
   const prompt = `Analyse le marché de l'emploi en France pour le métier: ${jobTitle}
 
 Fournis une analyse avec:
@@ -123,11 +114,10 @@ Fournis une analyse avec:
 6. Principaux secteurs qui recrutent
 7. Synthèse du marché (3-4 lignes)
 
-Réponds UNIQUEMENT avec un objet JSON valide.`
+Réponds UNIQUEMENT avec un objet JSON valide.`;
 
   try {
-    const response = await openai!.chat.completions.create({
-      model: 'gpt-4.1-mini',
+    const result = await geminiClient.generateContent({
       messages: [
         {
           role: 'system',
@@ -139,18 +129,24 @@ Réponds UNIQUEMENT avec un objet JSON valide.`
         },
       ],
       temperature: 0.7,
-      response_format: { type: 'json_object' },
-    })
+      maxTokens: 2048,
+    });
 
-    const content = response.choices[0].message.content
+    const content = result.content;
     if (!content) {
-      throw new Error('No content in AI response')
+      throw new Error('No content in AI response');
     }
 
-    return JSON.parse(content)
+    // Extraire le JSON de la réponse
+    const jsonMatch = content.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      throw new Error('No JSON found in response');
+    }
+
+    return JSON.parse(jsonMatch[0]);
   } catch (error) {
-    console.error('Error analyzing job market:', error)
-    throw new Error('Failed to analyze job market')
+    console.error('Error analyzing job market:', error);
+    throw new Error('Failed to analyze job market');
   }
 }
 

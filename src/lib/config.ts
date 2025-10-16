@@ -26,7 +26,16 @@ export const supabaseConfig = {
 } as const
 
 /**
- * Configuration OpenAI
+ * Configuration Gemini AI
+ */
+export const geminiConfig = {
+  apiKey: getEnvVar('GEMINI_API_KEY', true),
+  model: process.env.GEMINI_MODEL || 'gemini-1.5-flash',
+} as const
+
+/**
+ * Configuration OpenAI (dépréciée - utiliser Gemini)
+ * @deprecated Utiliser geminiConfig à la place
  */
 export const openaiConfig = {
   apiKey: getEnvVar('OPENAI_API_KEY', false),
@@ -66,7 +75,7 @@ export const appConfig = {
  * Configuration des features flags
  */
 export const features = {
-  aiAnalysis: !!openaiConfig.apiKey,
+  aiAnalysis: !!geminiConfig.apiKey,
   payments: !!stripeConfig.secretKey,
   calendar: !!googleConfig.clientId,
   emailNotifications: true, // Toujours activé

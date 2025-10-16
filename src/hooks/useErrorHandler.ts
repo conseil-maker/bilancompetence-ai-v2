@@ -18,7 +18,7 @@ export function useErrorHandler() {
     console.error('Error caught:', err)
 
     let appError: AppError = {
-      message: 'Une erreur inattendue s'est produite',
+      message: "Une erreur inattendue s'est produite",
       timestamp: new Date(),
     }
 

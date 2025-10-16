@@ -2,6 +2,7 @@
 // MOTEUR D'ANALYSE IA - Analyse croisée des tests psychométriques
 // ============================================================================
 
+import { geminiClient } from './gemini-client';
 import { MBTIResultat } from '../tests/mbti';
 import { DISCResultat } from '../tests/disc';
 import { BigFiveResultat } from '../tests/bigfive';
@@ -590,25 +591,16 @@ La synthèse doit :
 5. Être encourageante et constructive`;
 
     try {
-      const response = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
-        },
-        body: JSON.stringify({
-          model: 'gpt-4-turbo-preview',
-          messages: [
-            { role: 'system', content: 'Vous êtes un expert en bilan de compétences, psychologue du travail.' },
-            { role: 'user', content: prompt }
-          ],
-          temperature: 0.7,
-          max_tokens: 800
-        })
+      const result = await geminiClient.generateContent({
+        messages: [
+          { role: 'system', content: 'Vous êtes un expert en bilan de compétences, psychologue du travail.' },
+          { role: 'user', content: prompt }
+        ],
+        temperature: 0.7,
+        maxTokens: 800
       });
 
-      const data = await response.json();
-      return data.choices[0].message.content;
+      return result.content;
     } catch (error) {
       console.error('Erreur génération synthèse IA:', error);
       return "Synthèse non disponible. Veuillez contacter votre consultant.";

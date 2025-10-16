@@ -1,10 +1,4 @@
-import OpenAI from 'openai'
-
-const openai = process.env.OPENAI_API_KEY
-  ? new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
-    })
-  : null
+import { geminiClient } from '@/lib/ai/gemini-client';
 
 export interface PersonalityAnalysis {
   traitsPrincipaux: {
@@ -60,10 +54,6 @@ export async function analyzePersonality(
   testResults: TestResults,
   additionalContext?: string
 ): Promise<PersonalityAnalysis> {
-  if (!openai) {
-    throw new Error('OpenAI API key not configured');
-  }
-  
   const prompt = `Tu es un psychologue du travail expert. Analyse les résultats de tests suivants:
 
 ${testResults.mbti ? `MBTI: Type ${testResults.mbti.type}
@@ -86,11 +76,10 @@ Fournis une analyse complète avec:
 5. 3-5 axes de développement prioritaires
 6. Synthèse globale de la personnalité professionnelle (5-6 lignes)
 
-Réponds UNIQUEMENT avec un objet JSON valide.`
+Réponds UNIQUEMENT avec un objet JSON valide.`;
 
   try {
-    const response = await openai!.chat.completions.create({
-      model: 'gpt-4.1-mini',
+    const result = await geminiClient.generateContent({
       messages: [
         {
           role: 'system',
@@ -102,18 +91,24 @@ Réponds UNIQUEMENT avec un objet JSON valide.`
         },
       ],
       temperature: 0.7,
-      response_format: { type: 'json_object' },
-    })
+      maxTokens: 3000,
+    });
 
-    const content = response.choices[0].message.content
+    const content = result.content;
     if (!content) {
-      throw new Error('No content in AI response')
+      throw new Error('No content in AI response');
     }
 
-    return JSON.parse(content)
+    // Extraire le JSON de la réponse
+    const jsonMatch = content.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      throw new Error('No JSON found in response');
+    }
+
+    return JSON.parse(jsonMatch[0]);
   } catch (error) {
-    console.error('Error analyzing personality:', error)
-    throw new Error('Failed to analyze personality')
+    console.error('Error analyzing personality:', error);
+    throw new Error('Failed to analyze personality');
   }
 }
 
@@ -140,10 +135,6 @@ export async function generateDevelopmentPlan(
   }[]
   synthesePlan: string
 }> {
-  if (!openai) {
-    throw new Error('OpenAI API key not configured');
-  }
-  
   const prompt = `Tu es un coach professionnel expert. Crée un plan de développement personnalisé.
 
 Analyse de personnalité:
@@ -157,11 +148,10 @@ Crée un plan de développement avec:
 3. 3-5 formations recommandées (avec type, durée et bénéfices)
 4. Synthèse du plan (4-5 lignes)
 
-Réponds UNIQUEMENT avec un objet JSON valide.`
+Réponds UNIQUEMENT avec un objet JSON valide.`;
 
   try {
-    const response = await openai!.chat.completions.create({
-      model: 'gpt-4.1-mini',
+    const result = await geminiClient.generateContent({
       messages: [
         {
           role: 'system',
@@ -173,18 +163,24 @@ Réponds UNIQUEMENT avec un objet JSON valide.`
         },
       ],
       temperature: 0.8,
-      response_format: { type: 'json_object' },
-    })
+      maxTokens: 3000,
+    });
 
-    const content = response.choices[0].message.content
+    const content = result.content;
     if (!content) {
-      throw new Error('No content in AI response')
+      throw new Error('No content in AI response');
     }
 
-    return JSON.parse(content)
+    // Extraire le JSON de la réponse
+    const jsonMatch = content.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      throw new Error('No JSON found in response');
+    }
+
+    return JSON.parse(jsonMatch[0]);
   } catch (error) {
-    console.error('Error generating development plan:', error)
-    throw new Error('Failed to generate development plan')
+    console.error('Error generating development plan:', error);
+    throw new Error('Failed to generate development plan');
   }
 }
 
