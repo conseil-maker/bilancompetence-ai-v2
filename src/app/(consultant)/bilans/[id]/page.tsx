@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { bilansModule } from '@/lib/supabase/modules';
+import { bilans } from '@/lib/supabase/modules';
 import { Bilan } from '@/types/database.types';
 import BilanStatusBadge from '@/components/bilans/BilanStatusBadge';
 
@@ -20,7 +20,7 @@ export default function BilanDetailPage() {
 
   const loadBilan = async () => {
     try {
-      const data = await bilansModule.getBilan(bilanId);
+      const data = await bilans.getBilan(bilanId);
       setBilan(data);
     } catch (error) {
       console.error('Erreur:', error);

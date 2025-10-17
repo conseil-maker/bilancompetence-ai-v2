@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useAuth } from '@/components/providers/AuthProvider';
-import { qualiopiModule } from '@/lib/supabase/modules';
+import { useAuthContext as useAuth } from '@/components/providers/AuthProvider';
+import { qualiopi } from '@/lib/supabase/modules';
 
 interface Reclamation {
   id: string;

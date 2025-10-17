@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { useAuth } from '@/components/providers/AuthProvider';
+import { useAuthContext as useAuth } from '@/components/providers/AuthProvider';
 import { resourcesModule } from '@/lib/supabase/modules';
 
 // Définition des types pour la ressource et les filtres

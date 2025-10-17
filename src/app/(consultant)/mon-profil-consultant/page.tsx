@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { useAuth } from '@/components/providers/AuthProvider';
+import { useAuthContext as useAuth } from '@/components/providers/AuthProvider';
 import { getConsultantProfile, updateConsultantProfile } from '@/lib/supabase/modules';
 import { ConsultantProfile, Specialty, Availability, Experience } from '@/lib/types'; // Assumer l'existence de ces types
 

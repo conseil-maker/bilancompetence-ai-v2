@@ -1,6 +1,6 @@
 'use client';
 
-import { useAuth } from '@/components/providers/AuthProvider';
+import { useAuthContext as useAuth } from '@/components/providers/AuthProvider';
 import { getConsultantConversations } from '@/lib/supabase/modules';
 import { useEffect, useState, useCallback } from 'react';
 import { Loader2 } from 'lucide-react';

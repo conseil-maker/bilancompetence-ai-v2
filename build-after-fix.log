@@ -1,0 +1,311 @@
+
+> bilancompetence-ai-v2@0.1.0 build /home/ubuntu/bilancompetence-ai-v2
+> next build
+
+   ▲ Next.js 15.5.5
+   - Environments: .env.local
+   - Experiments (use with caution):
+     · cpus: 1
+     · optimizePackageImports
+
+   Creating an optimized production build ...
+<w> [webpack.cache.PackFileCacheStrategy] Serializing big strings (118kiB) impacts deserialization performance (consider using Buffer instead and decode when needed)
+ ⚠ Compiled with warnings in 39.1s
+
+./src/app/(admin)/qualiopi/page.tsx
+Attempted import error: 'qualiopi'.'getEnquetesSatisfaction' is not exported from '@/lib/supabase/modules' (imported as 'qualiopi').
+
+Import trace for requested module:
+./src/app/(admin)/qualiopi/page.tsx
+
+./src/app/(beneficiaire)/experiences/page.tsx
+Attempted import error: 'competences'.'getAllExperiences' is not exported from '@/lib/supabase/modules' (imported as 'competences').
+
+Import trace for requested module:
+./src/app/(beneficiaire)/experiences/page.tsx
+
+./src/app/(beneficiaire)/notifications/page.tsx
+Attempted import error: 'getNotifications' is not exported from '@/lib/supabase/modules' (imported as 'getNotifications').
+
+Import trace for requested module:
+./src/app/(beneficiaire)/notifications/page.tsx
+
+./src/app/(beneficiaire)/notifications/page.tsx
+Attempted import error: 'markNotificationAsRead' is not exported from '@/lib/supabase/modules' (imported as 'markNotificationAsRead').
+
+Import trace for requested module:
+./src/app/(beneficiaire)/notifications/page.tsx
+
+./src/app/(beneficiaire)/notifications/page.tsx
+Attempted import error: 'markAllNotificationsAsRead' is not exported from '@/lib/supabase/modules' (imported as 'markAllNotificationsAsRead').
+
+Import trace for requested module:
+./src/app/(beneficiaire)/notifications/page.tsx
+
+./src/app/(consultant)/enquetes/page.tsx
+Attempted import error: 'qualiopi'.'getEnquetesSatisfaction' is not exported from '@/lib/supabase/modules' (imported as 'qualiopi').
+
+Import trace for requested module:
+./src/app/(consultant)/enquetes/page.tsx
+
+./src/app/(consultant)/mes-rendez-vous/page.tsx
+Attempted import error: 'rdvModule' is not exported from '@/lib/supabase/modules' (imported as 'rdvModule').
+
+Import trace for requested module:
+./src/app/(consultant)/mes-rendez-vous/page.tsx
+
+./src/app/(consultant)/messagerie/page.tsx
+Attempted import error: 'getConsultantConversations' is not exported from '@/lib/supabase/modules' (imported as 'getConsultantConversations').
+
+Import trace for requested module:
+./src/app/(consultant)/messagerie/page.tsx
+
+./src/app/(consultant)/mon-profil-consultant/page.tsx
+Attempted import error: 'getConsultantProfile' is not exported from '@/lib/supabase/modules' (imported as 'getConsultantProfile').
+
+Import trace for requested module:
+./src/app/(consultant)/mon-profil-consultant/page.tsx
+
+./src/app/(consultant)/mon-profil-consultant/page.tsx
+Attempted import error: 'updateConsultantProfile' is not exported from '@/lib/supabase/modules' (imported as 'updateConsultantProfile').
+
+Import trace for requested module:
+./src/app/(consultant)/mon-profil-consultant/page.tsx
+
+./src/components/messages/MessageThread.tsx
+Attempted import error: 'messagesModule' is not exported from '@/lib/supabase/modules' (imported as 'messagesModule').
+
+Import trace for requested module:
+./src/components/messages/MessageThread.tsx
+./src/app/(beneficiaire)/ma-messagerie/page.tsx
+
+./src/components/messages/MessageThread.tsx
+Attempted import error: 'messagesModule' is not exported from '@/lib/supabase/modules' (imported as 'messagesModule').
+
+Import trace for requested module:
+./src/components/messages/MessageThread.tsx
+./src/app/(beneficiaire)/ma-messagerie/page.tsx
+
+./src/components/plan-action/KanbanBoard.tsx
+Attempted import error: 'planActionModule' is not exported from '@/lib/supabase/modules' (imported as 'planActionModule').
+
+Import trace for requested module:
+./src/components/plan-action/KanbanBoard.tsx
+./src/app/(beneficiaire)/plan-action/page.tsx
+
+./src/components/plan-action/KanbanBoard.tsx
+Attempted import error: 'planActionModule' is not exported from '@/lib/supabase/modules' (imported as 'planActionModule').
+
+Import trace for requested module:
+./src/components/plan-action/KanbanBoard.tsx
+./src/app/(beneficiaire)/plan-action/page.tsx
+
+./src/app/(admin)/qualiopi/page.tsx
+Attempted import error: 'qualiopi'.'getEnquetesSatisfaction' is not exported from '@/lib/supabase/modules' (imported as 'qualiopi').
+
+Import trace for requested module:
+./src/app/(admin)/qualiopi/page.tsx
+
+./src/app/(beneficiaire)/experiences/page.tsx
+Attempted import error: 'competences'.'getAllExperiences' is not exported from '@/lib/supabase/modules' (imported as 'competences').
+
+Import trace for requested module:
+./src/app/(beneficiaire)/experiences/page.tsx
+
+./src/app/(beneficiaire)/notifications/page.tsx
+Attempted import error: 'getNotifications' is not exported from '@/lib/supabase/modules' (imported as 'getNotifications').
+
+Import trace for requested module:
+./src/app/(beneficiaire)/notifications/page.tsx
+
+./src/app/(beneficiaire)/notifications/page.tsx
+Attempted import error: 'markNotificationAsRead' is not exported from '@/lib/supabase/modules' (imported as 'markNotificationAsRead').
+
+Import trace for requested module:
+./src/app/(beneficiaire)/notifications/page.tsx
+
+./src/app/(beneficiaire)/notifications/page.tsx
+Attempted import error: 'markAllNotificationsAsRead' is not exported from '@/lib/supabase/modules' (imported as 'markAllNotificationsAsRead').
+
+Import trace for requested module:
+./src/app/(beneficiaire)/notifications/page.tsx
+
+./src/app/(consultant)/enquetes/page.tsx
+Attempted import error: 'qualiopi'.'getEnquetesSatisfaction' is not exported from '@/lib/supabase/modules' (imported as 'qualiopi').
+
+Import trace for requested module:
+./src/app/(consultant)/enquetes/page.tsx
+
+./src/app/(consultant)/mes-rendez-vous/page.tsx
+Attempted import error: 'rdvModule' is not exported from '@/lib/supabase/modules' (imported as 'rdvModule').
+
+Import trace for requested module:
+./src/app/(consultant)/mes-rendez-vous/page.tsx
+
+./src/app/(consultant)/messagerie/page.tsx
+Attempted import error: 'getConsultantConversations' is not exported from '@/lib/supabase/modules' (imported as 'getConsultantConversations').
+
+Import trace for requested module:
+./src/app/(consultant)/messagerie/page.tsx
+
+./src/app/(consultant)/mon-profil-consultant/page.tsx
+Attempted import error: 'getConsultantProfile' is not exported from '@/lib/supabase/modules' (imported as 'getConsultantProfile').
+
+Import trace for requested module:
+./src/app/(consultant)/mon-profil-consultant/page.tsx
+
+./src/app/(consultant)/mon-profil-consultant/page.tsx
+Attempted import error: 'updateConsultantProfile' is not exported from '@/lib/supabase/modules' (imported as 'updateConsultantProfile').
+
+Import trace for requested module:
+./src/app/(consultant)/mon-profil-consultant/page.tsx
+
+./src/components/messages/MessageThread.tsx
+Attempted import error: 'messagesModule' is not exported from '@/lib/supabase/modules' (imported as 'messagesModule').
+
+Import trace for requested module:
+./src/components/messages/MessageThread.tsx
+./src/app/(beneficiaire)/ma-messagerie/page.tsx
+
+./src/components/messages/MessageThread.tsx
+Attempted import error: 'messagesModule' is not exported from '@/lib/supabase/modules' (imported as 'messagesModule').
+
+Import trace for requested module:
+./src/components/messages/MessageThread.tsx
+./src/app/(beneficiaire)/ma-messagerie/page.tsx
+
+./src/components/plan-action/KanbanBoard.tsx
+Attempted import error: 'planActionModule' is not exported from '@/lib/supabase/modules' (imported as 'planActionModule').
+
+Import trace for requested module:
+./src/components/plan-action/KanbanBoard.tsx
+./src/app/(beneficiaire)/plan-action/page.tsx
+
+./src/components/plan-action/KanbanBoard.tsx
+Attempted import error: 'planActionModule' is not exported from '@/lib/supabase/modules' (imported as 'planActionModule').
+
+Import trace for requested module:
+./src/components/plan-action/KanbanBoard.tsx
+./src/app/(beneficiaire)/plan-action/page.tsx
+
+./node_modules/.pnpm/@supabase+realtime-js@2.75.0/node_modules/@supabase/realtime-js/dist/module/lib/websocket-factory.js
+A Node.js API is used (process.versions at line: 32) which is not supported in the Edge Runtime.
+Learn more: https://nextjs.org/docs/api-reference/edge-runtime
+
+Import trace for requested module:
+./node_modules/.pnpm/@supabase+realtime-js@2.75.0/node_modules/@supabase/realtime-js/dist/module/lib/websocket-factory.js
+./node_modules/.pnpm/@supabase+realtime-js@2.75.0/node_modules/@supabase/realtime-js/dist/module/index.js
+./node_modules/.pnpm/@supabase+supabase-js@2.75.0/node_modules/@supabase/supabase-js/dist/module/index.js
+./node_modules/.pnpm/@supabase+ssr@0.7.0_@supabase+supabase-js@2.75.0/node_modules/@supabase/ssr/dist/module/createBrowserClient.js
+./node_modules/.pnpm/@supabase+ssr@0.7.0_@supabase+supabase-js@2.75.0/node_modules/@supabase/ssr/dist/module/index.js
+
+./node_modules/.pnpm/@supabase+supabase-js@2.75.0/node_modules/@supabase/supabase-js/dist/module/index.js
+A Node.js API is used (process.version at line: 23) which is not supported in the Edge Runtime.
+Learn more: https://nextjs.org/docs/api-reference/edge-runtime
+
+Import trace for requested module:
+./node_modules/.pnpm/@supabase+supabase-js@2.75.0/node_modules/@supabase/supabase-js/dist/module/index.js
+./node_modules/.pnpm/@supabase+ssr@0.7.0_@supabase+supabase-js@2.75.0/node_modules/@supabase/ssr/dist/module/createBrowserClient.js
+./node_modules/.pnpm/@supabase+ssr@0.7.0_@supabase+supabase-js@2.75.0/node_modules/@supabase/ssr/dist/module/index.js
+
+   Skipping validation of types
+   Skipping linting
+   Collecting page data ...
+(node:13675) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+ ⚠ Using edge runtime on a page currently disables static generation for that page
+   Generating static pages (0/71) ...
+   Generating static pages (17/71) 
+   Generating static pages (35/71) 
+   Generating static pages (53/71) 
+ ✓ Generating static pages (71/71)
+(node:13688) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                      Size  First Load JS
+┌ ○ /                                           120 B         204 kB
+├ ○ /_not-found                                 191 B         205 kB
+├ ○ /a-propos                                   120 B         204 kB
+├ ○ /admin-dashboard                          2.21 kB         207 kB
+├ ƒ /api/ai/analyze                             120 B         204 kB
+├ ƒ /api/ai/analyze-cv                          120 B         204 kB
+├ ƒ /api/ai/analyze-personality                 120 B         204 kB
+├ ƒ /api/ai/job-recommendations                 120 B         204 kB
+├ ƒ /api/ai/questions/followup                  120 B         204 kB
+├ ƒ /api/ai/questions/generate                  120 B         204 kB
+├ ƒ /api/analytics                              120 B         204 kB
+├ ƒ /api/automation/parcours                    120 B         204 kB
+├ ƒ /api/bilans                                 120 B         204 kB
+├ ƒ /api/bilans/[id]                            119 B         204 kB
+├ ƒ /api/bilans/[id]/stats                      120 B         204 kB
+├ ƒ /api/bilans/generate-synthese               120 B         204 kB
+├ ƒ /api/calendar/create-event                  119 B         204 kB
+├ ƒ /api/competences/extract                    120 B         204 kB
+├ ƒ /api/documents/attestation                  119 B         204 kB
+├ ƒ /api/documents/certificat                   120 B         204 kB
+├ ƒ /api/documents/convention                   120 B         204 kB
+├ ƒ /api/documents/emargement                   120 B         204 kB
+├ ƒ /api/documents/emargement/[id]/signature    120 B         204 kB
+├ ƒ /api/documents/synthese                     120 B         204 kB
+├ ƒ /api/formations/suggest                     120 B         204 kB
+├ ƒ /api/health                                 120 B         204 kB
+├ ƒ /api/matching                               120 B         204 kB
+├ ƒ /api/parcours/preliminaire                  120 B         204 kB
+├ ƒ /api/payments/create-checkout               120 B         204 kB
+├ ƒ /api/pistes-metiers/gap-analysis            120 B         204 kB
+├ ƒ /api/pistes-metiers/suggest                 120 B         204 kB
+├ ƒ /api/profile                                120 B         204 kB
+├ ƒ /api/qualiopi/generate-report               120 B         204 kB
+├ ƒ /api/tests/[type]                           120 B         204 kB
+├ ○ /audit                                    2.69 kB         247 kB
+├ ○ /beneficiaire-dashboard                    2.1 kB         246 kB
+├ ○ /bilans                                   2.28 kB         207 kB
+├ ƒ /bilans/[id]                              1.36 kB         246 kB
+├ ○ /competences                              1.46 kB         246 kB
+├ ○ /consultant-dashboard                      2.2 kB         246 kB
+├ ○ /contact                                    119 B         204 kB
+├ ○ /documents/attestation                    2.38 kB         207 kB
+├ ○ /documents/certificat                     2.79 kB         207 kB
+├ ○ /documents/convention                     2.82 kB         207 kB
+├ ○ /documents/emargement                     2.96 kB         207 kB
+├ ○ /documents/synthese                       2.77 kB         207 kB
+├ ○ /enquetes                                 1.45 kB         246 kB
+├ ○ /experiences                              1.82 kB         246 kB
+├ ○ /formations                               2.19 kB         246 kB
+├ ○ /login                                    1.18 kB         245 kB
+├ ○ /ma-messagerie                            1.17 kB         245 kB
+├ ○ /mes-rdv                                  1.17 kB         245 kB
+├ ○ /mes-rendez-vous                          1.81 kB         246 kB
+├ ○ /messagerie                               1.69 kB         246 kB
+├ ○ /mon-profil                               1.97 kB         246 kB
+├ ○ /mon-profil-consultant                    2.59 kB         247 kB
+├ ○ /notifications                            2.53 kB         247 kB
+├ ○ /offline                                  1.47 kB         206 kB
+├ ○ /parcours                                 1.88 kB         206 kB
+├ ○ /parcours/conclusion                      3.66 kB         208 kB
+├ ○ /parcours/investigation                   3.35 kB         208 kB
+├ ○ /parcours/preliminaire                    2.37 kB         207 kB
+├ ○ /parcours/suivi                           3.33 kB         208 kB
+├ ○ /pistes-metiers                           2.58 kB         247 kB
+├ ○ /plan-action                              1.07 kB         245 kB
+├ ○ /qualiopi                                 2.19 kB         246 kB
+├ ○ /reclamations                             1.72 kB         246 kB
+├ ○ /register                                 2.64 kB         247 kB
+├ ○ /resources                                2.04 kB         246 kB
+├ ○ /statistiques                               523 B         205 kB
+├ ○ /tarifs                                     120 B         204 kB
+├ ○ /tests                                    2.02 kB         206 kB
+├ ○ /tous-bilans                              1.79 kB         206 kB
+└ ○ /utilisateurs                             2.29 kB         207 kB
++ First Load JS shared by all                  204 kB
+  ├ chunks/vendor-2194c9b892a311e1.js          196 kB
+  └ other shared chunks (total)               8.13 kB
+
+
+ƒ Middleware                                  74.9 kB
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useAuth } from '@/components/providers/AuthProvider';
+import { useAuthContext as useAuth } from '@/components/providers/AuthProvider';
 import RdvCalendar from '@/components/rdv/RdvCalendar';
 
 export default function MesRendezvousPage() {

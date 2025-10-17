@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { useAuth } from '@/components/providers/AuthProvider';
+import { useAuthContext as useAuth } from '@/components/providers/AuthProvider';
 import { rdvModule } from '@/lib/supabase/modules';
 import { Rdv } from '@/lib/supabase/modules/rdvModule';
 

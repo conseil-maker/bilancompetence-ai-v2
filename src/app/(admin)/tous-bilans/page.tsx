@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { bilansModule } from '@/lib/supabase/modules';
+import { bilans } from '@/lib/supabase/modules';
 import BilanCard from '@/components/bilans/BilanCard';
 import { Bilan } from '@/types/database.types';
 
@@ -16,7 +16,7 @@ export default function TousBilansPage() {
 
   const loadBilans = async () => {
     try {
-      const data = await bilansModule.getAllBilans();
+      const data = await bilans.getAllBilans();
       setBilans(data);
     } catch (error) {
       console.error('Erreur:', error);

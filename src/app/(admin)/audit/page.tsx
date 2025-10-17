@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { useAuth } from '@/components/providers/AuthProvider';
+import { useAuthContext as useAuth } from '@/components/providers/AuthProvider';
 // Supposons que le module d'activités exporte une fonction pour récupérer les données
 // et que le type d'activité est défini ici ou dans un fichier de types partagé.
 // Pour l'exercice, nous allons définir les types et simuler le module.

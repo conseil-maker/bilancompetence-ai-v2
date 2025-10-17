@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useAuth } from '@/components/providers/AuthProvider';
-import { competencesModule } from '@/lib/supabase/modules';
+import { useAuthContext as useAuth } from '@/components/providers/AuthProvider';
+import { competences } from '@/lib/supabase/modules';
 import CompetenceCard from '@/components/competences/CompetenceCard';
 import { Competence } from '@/types/database.types';
 
@@ -20,7 +20,7 @@ export default function CompetencesPage() {
   const loadCompetences = async () => {
     try {
       if (!user) return;
-      const data = await competencesModule.getCompetencesByUser(user.id);
+      const data = await competences.getCompetencesByUser(user.id);
       setCompetences(data);
     } catch (error) {
       console.error('Erreur:', error);

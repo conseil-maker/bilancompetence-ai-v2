@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useAuth } from '@/components/providers/AuthProvider';
-import { profilesModule } from '@/lib/supabase/modules';
+import { useAuthContext as useAuth } from '@/components/providers/AuthProvider';
+import { profiles } from '@/lib/supabase/modules';
 import { Profile } from '@/types/database.types';
 
 export default function ProfilBénéficiairePage() {
@@ -32,7 +32,7 @@ export default function ProfilBénéficiairePage() {
   const loadProfile = async () => {
     try {
       if (!user) return;
-      const data = await profilesModule.getProfile(user.id);
+      const data = await profiles.getProfile(user.id);
       if (data) {
         setProfile(data);
         setFormData({
@@ -60,7 +60,7 @@ export default function ProfilBénéficiairePage() {
     if (!user) return;
 
     try {
-      await profilesModule.updateProfile(user.id, formData);
+      await profiles.updateProfile(user.id, formData);
       setEditing(false);
       loadProfile();
       alert('Profil mis à jour avec succès !');

@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useAuth } from '@/components/providers/AuthProvider';
-import { bilansModule } from '@/lib/supabase/modules';
+import { useAuthContext as useAuth } from '@/components/providers/AuthProvider';
+import { bilans } from '@/lib/supabase/modules';
 import KanbanBoard from '@/components/plan-action/KanbanBoard';
 
 export default function MonPlandActionPage() {
@@ -19,7 +19,7 @@ export default function MonPlandActionPage() {
   const loadBilan = async () => {
     try {
       if (!user) return;
-      const bilans = await bilansModule.getBilansByBeneficiaire(user.id);
+      const bilans = await bilans.getBilansByBeneficiaire(user.id);
       if (bilans.length > 0) {
         setBilanId(bilans[0].id);
       }

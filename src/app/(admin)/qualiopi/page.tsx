@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { useAuth } from '@/components/providers/AuthProvider';
-import { qualiopiModule } from '@/lib/supabase/modules';
+import { useAuthContext as useAuth } from '@/components/providers/AuthProvider';
+import { qualiopi } from '@/lib/supabase/modules';
 
 // Définition des types pour les données de satisfaction
 interface EnqueteSatisfaction {
@@ -35,8 +35,8 @@ const QualiopiDashboardPage: React.FC = () => {
           setIsLoading(true);
           setError(null);
           // Simuler l'appel à la fonction fournie
-          // @ts-ignore - On suppose que qualiopiModule est bien défini et contient la fonction
-          const data: EnqueteSatisfaction[] = await qualiopiModule.getEnquetesSatisfaction();
+          // @ts-ignore - On suppose que qualiopi est bien défini et contient la fonction
+          const data: EnqueteSatisfaction[] = await qualiopi.getEnquetesSatisfaction();
           setEnquetes(data);
         } catch (err) {
           console.error("Erreur lors du chargement des enquêtes:", err);

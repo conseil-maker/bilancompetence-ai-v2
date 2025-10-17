@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { useAuth } from '@/components/providers/AuthProvider';
+import { useAuthContext as useAuth } from '@/components/providers/AuthProvider';
 import { pistesMetiersModule } from '@/lib/supabase/modules';
 
 // Définition des interfaces de données (simulées car la structure exacte n'est pas fournie)

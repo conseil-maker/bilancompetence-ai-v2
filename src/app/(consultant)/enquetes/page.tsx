@@ -1,9 +1,9 @@
 'use client'
 
 import { useState, useEffect } from 'react';
-import { useAuth } from '@/components/providers/AuthProvider';
-import { qualiopiModule } from '@/lib/supabase/modules';
-import { EnqueteSatisfaction } from '@/lib/supabase/modules/qualiopiModule'; // Supposons ce type pour la structure des données
+import { useAuthContext as useAuth } from '@/components/providers/AuthProvider';
+import { qualiopi } from '@/lib/supabase/modules';
+import { EnqueteSatisfaction } from '@/lib/supabase/modules/qualiopi'; // Supposons ce type pour la structure des données
 
 // Définition du type pour les données de l'enquête (à adapter si le type réel est différent)
 interface EnqueteData extends EnqueteSatisfaction {
@@ -24,7 +24,7 @@ export default function EnquetesSatisfactionPage() {
           setError(null);
           // L'ID du consultant est souvent dans user.id ou un champ similaire.
           // Adapter l'appel si l'ID est requis par getEnquetesSatisfaction()
-          const data = await qualiopiModule.getEnquetesSatisfaction(); 
+          const data = await qualiopi.getEnquetesSatisfaction(); 
           setEnquetes(data as EnqueteData[]);
         } catch (err) {
           console.error("Erreur lors du chargement des enquêtes:", err);

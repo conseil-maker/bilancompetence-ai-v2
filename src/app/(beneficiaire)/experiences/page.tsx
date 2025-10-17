@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useAuth } from '@/components/providers/AuthProvider'
-import { competencesModule } from '@/lib/supabase/modules'
+import { useAuthContext as useAuth } from '@/components/providers/AuthProvider'
+import { competences } from '@/lib/supabase/modules'
 
 // Définition d'un type d'expérience pour la clarté, même si non strictement nécessaire pour le TSX pur
 interface Experience {
@@ -50,7 +50,7 @@ export default function ExperiencesPage() {
     setError(null)
     try {
       // Utilisation de la fonction fournie dans la consigne
-      const data = await competencesModule.getAllExperiences()
+      const data = await competences.getAllExperiences()
       setExperiences(data as Experience[])
     } catch (err) {
       console.error('Erreur lors du chargement des expériences:', err)
@@ -74,7 +74,7 @@ export default function ExperiencesPage() {
     // et on recharge les données.
     try {
       // Exemple d'appel hypothétique:
-      // await competencesModule.addExperience(newExperience);
+      // await competences.addExperience(newExperience);
       // await fetchExperiences(); // Recharger la liste
       
       // Simulation de l'ajout pour le rendu initial
