@@ -18,8 +18,11 @@ export const passwordSchema = z
 // Validation de téléphone français
 export const phoneSchema = z
   .string()
-  .regex(/^(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}$/, 'Numéro de téléphone invalide')
   .optional()
+  .refine(
+    (val) => !val || val.trim() === '' || /^(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}$/.test(val),
+    { message: 'Numéro de téléphone invalide' }
+  )
 
 // Validation de nom complet
 export const fullNameSchema = z
