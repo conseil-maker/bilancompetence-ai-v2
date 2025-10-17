@@ -86,27 +86,26 @@ export function useAuth() {
   }
 
   const register = async (data: RegisterData) => {
-    // 1. Créer l'utilisateur dans Supabase Auth
+    // 1. Créer l'utilisateur dans Supabase Auth avec les métadonnées
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email: data.email,
       password: data.password,
+      options: {
+        data: {
+          first_name: data.first_name,
+          last_name: data.last_name,
+          phone: data.phone || null,
+          role: data.role || 'beneficiaire',
+        },
+      },
     })
 
     if (authError) throw authError
     if (!authData.user) throw new Error('Erreur lors de la création du compte')
 
-    // 2. Créer le profil
-    const { error: profileError } = await supabase
-      .from('profiles')
-      .insert({
-        id: authData.user.id,
-        email: data.email,
-        full_name: data.full_name,
-        phone: data.phone,
-        role: data.role || 'beneficiaire',
-      })
-
-    if (profileError) throw profileError
+    // Le profil sera créé automatiquement par le trigger Supabase
+    // Attendre un peu pour que le trigger s'exécute
+    await new Promise(resolve => setTimeout(resolve, 1000))
 
     return authData
   }
